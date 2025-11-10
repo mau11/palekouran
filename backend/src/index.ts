@@ -14,6 +14,8 @@ app.use(
   })
 );
 
+app.get("/test", (c) => c.json({ status: "ok" }));
+
 app.get("/", (c) => c.text("Hello Node.js!"));
 
 console.log(`Backend server running on http://localhost:${port}`);
