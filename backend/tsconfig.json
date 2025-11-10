@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "paths": {
+      "@db/*": ["./src/db/*"],
+      "@lib/*": ["./src/lib/*"],
+      "@routes/*": ["./src/routes/*"]
+    }
+  }
+}

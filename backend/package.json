@@ -4,7 +4,7 @@
   "description": "",
   "type": "module",
   "scripts": {
-    "dev": "node src/index.ts"
+    "dev": "tsx src/index.ts"
   },
   "keywords": [],
   "author": "",
@@ -12,12 +12,15 @@
   "packageManager": "pnpm@10.6.2",
   "dependencies": {
     "@hono/node-server": "^1.19.6",
+    "@supabase/supabase-js": "^2.80.0",
+    "@types/node": "^24.10.0",
     "dotenv": "^17.2.3",
     "drizzle-orm": "^0.44.7",
     "hono": "^4.10.4",
     "postgres": "^3.4.7"
   },
   "devDependencies": {
-    "drizzle-kit": "^0.31.6"
+    "drizzle-kit": "^0.31.6",
+    "tsx": "^4.20.6"
   }
 }
