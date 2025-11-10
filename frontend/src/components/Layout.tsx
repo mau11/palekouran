@@ -1,9 +1,12 @@
+import Nav from "@components/Nav";
+import Footer from "./Footer";
+
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div>
-      {/* nav */}
+      <Nav />
       <main>{children}</main>
-      {/* footer */}
+      <Footer />
     </div>
   );
 };

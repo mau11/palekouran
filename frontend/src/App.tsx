@@ -1,3 +1,4 @@
+import "./App.css";
 import { useEffect, useState } from "react";
 import type { Session } from "@utils/types";
 import Layout from "@components/Layout";

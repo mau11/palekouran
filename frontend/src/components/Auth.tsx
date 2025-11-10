@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { Form, FormRow, HeaderTwo, InputError, Label } from "../Global.styled";
+import { AuthSubtext } from "./Auth.styled";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
@@ -72,14 +74,14 @@ const Auth = ({ onAuthSuccess }: AuthProps) => {
 
   return (
     <section>
-      <h2>{isSignup ? "Sign up" : "Log in"}</h2>
+      <HeaderTwo>{isSignup ? "Sign up" : "Log in"}</HeaderTwo>
 
-      {error && <p>{error}</p>}
+      {error && <InputError>{error}</InputError>}
 
-      <form onSubmit={isSignup ? handleSignup : handleLogin}>
+      <Form onSubmit={isSignup ? handleSignup : handleLogin}>
         {isSignup && (
-          <div>
-            <label htmlFor="username">Username</label>
+          <FormRow>
+            <Label htmlFor="username">Username</Label>
             <input
               type="text"
               name="username"
@@ -88,11 +90,11 @@ const Auth = ({ onAuthSuccess }: AuthProps) => {
               onChange={(e) => setUsername(e.target.value)}
               required
             />
-          </div>
+          </FormRow>
         )}
 
-        <div>
-          <label htmlFor="email">Email</label>
+        <FormRow>
+          <Label htmlFor="email">Email</Label>
           <input
             type="email"
             name="email"
@@ -101,10 +103,10 @@ const Auth = ({ onAuthSuccess }: AuthProps) => {
             onChange={(e) => setEmail(e.target.value)}
             required
           />
-        </div>
+        </FormRow>
 
-        <div>
-          <label htmlFor="password">Password</label>
+        <FormRow>
+          <Label htmlFor="password">Password</Label>
           <input
             type="password"
             name="password"
@@ -113,24 +115,24 @@ const Auth = ({ onAuthSuccess }: AuthProps) => {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-        </div>
+        </FormRow>
 
         <button type="submit" disabled={loading}>
           {loading ? "Loading..." : isSignup ? "Sign up" : "Log in"}
         </button>
-      </form>
+      </Form>
 
-      <p>
+      <AuthSubtext>
         {isSignup ? "Already have an account?" : "Need an account?"}{" "}
-        <button
+        <a
           onClick={() => {
             setIsSignup(!isSignup);
             setError("");
           }}
         >
           {isSignup ? "Log In" : "Sign Up"}
-        </button>
-      </p>
+        </a>
+      </AuthSubtext>
     </section>
   );
 };
