@@ -12,6 +12,12 @@
   "packageManager": "pnpm@10.6.2",
   "dependencies": {
     "@hono/node-server": "^1.19.6",
-    "hono": "^4.10.4"
+    "dotenv": "^17.2.3",
+    "drizzle-orm": "^0.44.7",
+    "hono": "^4.10.4",
+    "postgres": "^3.4.7"
+  },
+  "devDependencies": {
+    "drizzle-kit": "^0.31.6"
   }
 }
