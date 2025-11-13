@@ -8,6 +8,46 @@ import { eq } from "drizzle-orm";
 
 const auth = new Hono();
 
+// get user
+auth.get("/self", async (c) => {
+  try {
+    const authHeader = c.req.header("Authorization");
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return c.json({ error: "Unauthorized. No token provided" }, 401);
+    }
+
+    const token = authHeader.replace("Bearer ", "");
+
+    // verify token with supabase
+    const { data: authData, error } = await supabase.auth.getUser(token);
+
+    if (error || !authData.user) {
+      return c.json({ error: "Invalid token" }, 401);
+    }
+
+    const [user] = await db
+      .select()
+      .from(users)
+      .where(eq(users.id, authData.user.id));
+
+    if (!user) {
+      return c.json({ error: "User not found" }, 404);
+    }
+
+    return c.json({
+      user: {
+        id: user.id,
+        email: user.email,
+        username: user.username,
+        createdAt: user.createdAt,
+      },
+    });
+  } catch (err) {
+    console.error("Error getting user: ", err);
+    return c.json({ error: "Server error" }, 500);
+  }
+});
+
 // sign up
 auth.post("/signup", async (c) => {
   try {
@@ -118,8 +158,8 @@ auth.post("/signin", async (c) => {
 auth.post("/signout", async (c) => {
   try {
     const authHeader = c.req.header("Authorization");
-    if (!authHeader) {
-      return c.json({ error: "No token provided" }, 401);
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return c.json({ error: "Unauthorized. No token provided" }, 401);
     }
 
     const token = authHeader.replace("Bearer ", "");

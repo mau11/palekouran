@@ -2,11 +2,14 @@ import "./App.css";
 import { useEffect, useState } from "react";
 import type { Session } from "@utils/types";
 import Layout from "@components/Layout";
-import Account from "./components/Account";
-import Auth from "./components/Auth";
+import Account from "@components/Account";
+import Auth from "@components/Auth";
+import type { User } from "@backend/types";
+import AuthContext from "@components/AuthContext";
 
 function App() {
   const [session, setSession] = useState<Session | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -14,12 +17,46 @@ function App() {
     const token = localStorage.getItem("supabase_token");
     if (token) {
       setSession({ access_token: token });
+      fetchUser(token);
+    } else {
+      setLoading(false);
     }
-    setLoading(false);
   }, []);
 
-  const handleAuthSuccess = (data: { session: Session }) => {
-    setSession(data.session);
+  const fetchUser = async (token: string) => {
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/auth/self`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setUser(data.user);
+      } else {
+        const errorData = await response.json();
+        console.error("Failed to fetch user:", errorData);
+
+        // token is invalid, remove it + clear user/session
+        localStorage.removeItem("supabase_token");
+
+        setSession(null);
+        setUser(null);
+      }
+    } catch (error) {
+      console.error("Failed to fetch user:", error);
+      localStorage.removeItem("supabase_token");
+      setSession(null);
+      setUser(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAuthSuccess = (session: Session, user: User) => {
+    setUser(user);
+    setSession(session);
   };
 
   const handleSignOut = async () => {
@@ -34,6 +71,7 @@ function App() {
 
       localStorage.removeItem("supabase_token");
       setSession(null);
+      setUser(null);
     } catch (error) {
       console.error("Signout error:", error);
     }
@@ -43,11 +81,14 @@ function App() {
 
   return (
     <Layout>
-      {session ? (
-        <Account session={session} onSignOut={handleSignOut} />
-      ) : (
-        <Auth onAuthSuccess={handleAuthSuccess} />
-      )}
+      <AuthContext
+        value={{
+          user: user,
+          signOut: handleSignOut,
+        }}
+      >
+        {session ? <Account /> : <Auth onAuthSuccess={handleAuthSuccess} />}
+      </AuthContext>
     </Layout>
   );
 }

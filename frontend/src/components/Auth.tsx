@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { Form, FormRow, HeaderTwo, InputError, Label } from "../Global.styled";
 import { AuthSubtext } from "./Auth.styled";
+import type { Session } from "@utils/types";
+import type { User } from "@backend/types";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 type AuthProps = {
-  onAuthSuccess: (session: any) => void;
+  onAuthSuccess: (session: Session, user: User) => void;
 };
 
 const Auth = ({ onAuthSuccess }: AuthProps) => {
@@ -34,9 +36,9 @@ const Auth = ({ onAuthSuccess }: AuthProps) => {
         throw new Error(data.error || "Login failed");
       }
 
-      // Store session token
+      // store session token
       localStorage.setItem("supabase_token", data.session.access_token);
-      onAuthSuccess(data);
+      onAuthSuccess(data.session, data.user);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed");
     } finally {
@@ -64,7 +66,7 @@ const Auth = ({ onAuthSuccess }: AuthProps) => {
 
       // store session token
       localStorage.setItem("supabase_token", data.session.access_token);
-      onAuthSuccess(data);
+      onAuthSuccess(data.session, data.user);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Signup failed");
     } finally {

@@ -8,7 +8,8 @@ text-align: center;
   border-top: 0.5px solid var(--black);
 
   a {
-    text-decoration: underline
+    text-decoration: underline;
+    cursor: pointer;
   }
 
   @media ${breakpoints.mobile.large} {

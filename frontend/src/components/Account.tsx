@@ -1,12 +1,42 @@
-import type { AccountProps } from "@utils/types";
+import { useContext } from "react";
+import AuthContext from "./AuthContext";
 
-const Account = ({ onSignOut }: AccountProps) => {
+const Account = () => {
+  const auth = useContext(AuthContext);
+
+  if (!auth) {
+    throw new Error("Account info not found");
+  }
+
+  const { user, signOut } = auth;
+
   return (
-    <div>
-      <h1>Welcome!</h1>
-      <p>You are logged in.</p>
-      <button onClick={onSignOut}>Sign Out</button>
-    </div>
+    <section>
+      {/* Header */}
+      <header>
+        <h1>Welcome, {user?.username ?? "Learner"}!</h1>
+      </header>
+
+      {/* show general stats */}
+      <section>
+        <h2>My Stats</h2>
+        <ul>
+          <li>Total Decks: {/* number of decks */}</li>
+        </ul>
+      </section>
+
+      {/* decks */}
+      <section>
+        <h2>My Decks</h2>
+        <ul>{/* Loop through user decks */}</ul>
+        <button>Create New Deck</button>
+      </section>
+
+      {/* Account actions */}
+      <footer>
+        <button onClick={signOut}>Sign Out</button>
+      </footer>
+    </section>
   );
 };
 
