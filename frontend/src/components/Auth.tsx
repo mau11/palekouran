@@ -18,57 +18,34 @@ const Auth = ({ onAuthSuccess }: AuthProps) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = async (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setLoading(true);
     setError("");
 
     try {
-      const response = await fetch(`${API_URL}/api/auth/signin`, {
+      const endpoint = isSignup ? "signup" : "signin";
+      const body = isSignup
+        ? { email, password, username }
+        : { email, password };
+
+      const response = await fetch(`${API_URL}/api/auth/${endpoint}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify(body),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Login failed");
+        throw new Error(data.error || "Authentication failed");
       }
 
       // store session token
       localStorage.setItem("supabase_token", data.session.access_token);
       onAuthSuccess(data.session, data.user);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Login failed");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleSignup = async (event: React.FormEvent) => {
-    event.preventDefault();
-    setLoading(true);
-    setError("");
-
-    try {
-      const response = await fetch(`${API_URL}/api/auth/signup`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password, username }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Signup failed");
-      }
-
-      // store session token
-      localStorage.setItem("supabase_token", data.session.access_token);
-      onAuthSuccess(data.session, data.user);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Signup failed");
+      setError(err instanceof Error ? err.message : "Authentication failed");
     } finally {
       setLoading(false);
     }
@@ -80,7 +57,7 @@ const Auth = ({ onAuthSuccess }: AuthProps) => {
 
       {error && <InputError>{error}</InputError>}
 
-      <Form onSubmit={isSignup ? handleSignup : handleLogin}>
+      <Form onSubmit={handleSubmit}>
         {isSignup && (
           <FormRow>
             <Label htmlFor="username">Username</Label>
