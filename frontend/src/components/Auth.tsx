@@ -3,8 +3,7 @@ import { Form, FormRow, HeaderTwo, InputError, Label } from "../Global.styled";
 import { AuthSubtext } from "./Auth.styled";
 import type { Session } from "@utils/types";
 import type { User } from "@backend/types";
-
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+import { API_URL } from "@utils/api";
 
 type AuthProps = {
   onAuthSuccess: (session: Session, user: User) => void;

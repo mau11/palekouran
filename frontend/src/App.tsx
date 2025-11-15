@@ -6,6 +6,7 @@ import Account from "@components/Account";
 import Auth from "@components/Auth";
 import type { User } from "@backend/types";
 import AuthContext from "@components/AuthContext";
+import { API_URL } from "@utils/api";
 
 function App() {
   const [session, setSession] = useState<Session | null>(null);
@@ -25,12 +26,9 @@ function App() {
 
   const fetchUser = async (token: string) => {
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/auth/self`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      const response = await fetch(`${API_URL}/api/auth/self`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       if (response.ok) {
         const data = await response.json();
         setUser(data.user);
