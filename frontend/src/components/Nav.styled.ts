@@ -1,5 +1,5 @@
 import styled from "styled-components";
 
-export const NavSection = styled.section`
+export const NavHeader = styled.header`
   margin-bottom: 2em;
 `;

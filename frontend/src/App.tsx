@@ -1,27 +1,31 @@
+import { Routes, Route } from "react-router"; // https://reactrouter.com/start/declarative/routing
 import "./App.css";
 import Layout from "@components/Layout";
+import Home from "@components/Home";
+import AuthForm from "@components/AuthForm";
+import ProtectedLayout from "@components/ProtectedLayout";
 import Account from "@components/Account";
-import Auth from "@components/Auth";
-import AuthContext from "@components/AuthContext";
-import useAuth from "./hooks/useAuth";
+import AuthContext from "@contexts/AuthContext";
+import useAuth from "@customHooks/useAuth";
 
 function App() {
-  const { session, loading, user, handleSignOut, handleAuthSuccess } =
-    useAuth();
+  const auth = useAuth();
 
-  if (loading) return <p>Loading...</p>;
+  if (auth.loading) return <p>Loading...</p>;
 
   return (
-    <Layout>
-      <AuthContext
-        value={{
-          user: user,
-          signOut: handleSignOut,
-        }}
-      >
-        {session ? <Account /> : <Auth onAuthSuccess={handleAuthSuccess} />}
-      </AuthContext>
-    </Layout>
+    <AuthContext value={auth}>
+      <Routes>
+        <Route element={<Layout />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<AuthForm />} />
+          <Route path="/signup" element={<AuthForm />} />
+        </Route>
+        <Route element={<ProtectedLayout />}>
+          <Route path="/account" element={<Account />} />
+        </Route>
+      </Routes>
+    </AuthContext>
   );
 }
 

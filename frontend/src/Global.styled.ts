@@ -1,5 +1,5 @@
-import breakpoints from "@utils/breakpoints";
 import styled from "styled-components";
+import breakpoints from "@utils/breakpoints";
 
 // HEADERS
 export const HeaderOne = styled.h1`

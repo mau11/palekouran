@@ -1,13 +1,16 @@
+import { Outlet } from "react-router";
 import Nav from "@components/Nav";
-import Footer from "./Footer";
+import Footer from "@components/Footer";
 
-const Layout = ({ children }: { children: React.ReactNode }) => {
+const Layout = () => {
   return (
-    <div>
+    <>
       <Nav />
-      <main>{children}</main>
+      <main>
+        <Outlet />
+      </main>
       <Footer />
-    </div>
+    </>
   );
 };
 

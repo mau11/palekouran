@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
-import type { Session } from "@utils/types";
+import { useNavigate } from "react-router";
 import type { User } from "@backend/types";
 import { API_URL } from "@utils/api";
+import type { Session } from "@utils/types";
 
 const useAuth = () => {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // check if user is already signed in
@@ -65,12 +67,19 @@ const useAuth = () => {
       localStorage.removeItem("supabase_token");
       setSession(null);
       setUser(null);
+      navigate("/");
     } catch (error) {
       console.error("Signout error:", error);
     }
   };
 
-  return { session, user, loading, handleSignOut, handleAuthSuccess };
+  return {
+    session,
+    user,
+    loading,
+    handleSignOut,
+    handleAuthSuccess,
+  };
 };
 
 export default useAuth;

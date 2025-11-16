@@ -24,6 +24,8 @@
     "paths": {
       "@backend/*": ["../backend/src/*"],
       "@components/*": ["./src/components/*"],
+      "@contexts/*": ["./src/contexts/*"],
+      "@customHooks/*": ["./src/customHooks/*"],
       "@utils/*": ["./src/utils/*"]
     }
   },

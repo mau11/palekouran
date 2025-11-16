@@ -1,16 +1,21 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router";
 import { Form, FormRow, HeaderTwo, InputError, Label } from "../Global.styled";
-import { AuthSubtext } from "./Auth.styled";
-import type { Session } from "@utils/types";
-import type { User } from "@backend/types";
+import { AuthSubtext } from "./AuthForm.styled";
+import AuthContext from "@contexts/AuthContext";
 import { API_URL } from "@utils/api";
 
-type AuthProps = {
-  onAuthSuccess: (session: Session, user: User) => void;
-};
+const AuthForm = () => {
+  const auth = useContext(AuthContext);
 
-const Auth = ({ onAuthSuccess }: AuthProps) => {
-  const [isSignup, setIsSignup] = useState(false);
+  if (!auth) {
+    throw new Error("Account info not found");
+  }
+
+  const { handleAuthSuccess } = auth;
+  const isSignup = useLocation().pathname === "/signup";
+  const navigate = useNavigate();
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [email, setEmail] = useState("");
@@ -42,7 +47,9 @@ const Auth = ({ onAuthSuccess }: AuthProps) => {
 
       // store session token
       localStorage.setItem("supabase_token", data.session.access_token);
-      onAuthSuccess(data.session, data.user);
+      handleAuthSuccess(data.session, data.user);
+
+      navigate("/account");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Authentication failed");
     } finally {
@@ -102,17 +109,12 @@ const Auth = ({ onAuthSuccess }: AuthProps) => {
 
       <AuthSubtext>
         {isSignup ? "Already have an account?" : "Need an account?"}{" "}
-        <a
-          onClick={() => {
-            setIsSignup(!isSignup);
-            setError("");
-          }}
-        >
-          {isSignup ? "Log In" : "Sign Up"}
-        </a>
+        <Link to={isSignup ? "/login" : "/signup"}>
+          {isSignup ? "Log in" : "Sign up"}
+        </Link>
       </AuthSubtext>
     </section>
   );
 };
 
-export default Auth;
+export default AuthForm;

@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import AuthContext from "./AuthContext";
+import AuthContext from "@contexts/AuthContext";
 
 const Account = () => {
   const auth = useContext(AuthContext);
@@ -8,7 +8,7 @@ const Account = () => {
     throw new Error("Account info not found");
   }
 
-  const { user, signOut } = auth;
+  const { user } = auth;
 
   return (
     <section>
@@ -33,9 +33,6 @@ const Account = () => {
       </section>
 
       {/* Account actions */}
-      <footer>
-        <button onClick={signOut}>Sign Out</button>
-      </footer>
     </section>
   );
 };
