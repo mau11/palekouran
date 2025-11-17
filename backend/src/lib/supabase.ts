@@ -2,7 +2,11 @@
 import { createClient } from "@supabase/supabase-js";
 import "dotenv/config";
 
-if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+if (
+  !process.env.SUPABASE_URL ||
+  !process.env.SUPABASE_PUBLISHABLE_KEY ||
+  !process.env.SUPABASE_SECRET_KEY
+) {
   throw new Error("Missing required environment variables");
 }
 

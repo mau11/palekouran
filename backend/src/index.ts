@@ -19,6 +19,6 @@ app.use(
 
 app.route("/api/auth", auth);
 
-console.log(`Backend server running on http://localhost:${port}`);
+console.log(`Backend server running on port: ${port}`);
 
 serve({ fetch: app.fetch, port });
