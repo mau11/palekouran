@@ -5,12 +5,9 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import auth from "@routes/auth";
 import "dotenv/config";
-import { csrf } from "hono/csrf";
 
 const port = Number(process.env.PORT) || 3000;
 const app = new Hono();
-
-app.use(csrf());
 
 app.use(
   "/*",
