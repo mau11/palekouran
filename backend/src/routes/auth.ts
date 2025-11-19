@@ -1,34 +1,25 @@
 // referenced: https://github.com/CarlosZiegler/hono-supabase
 // https://supabase.com/docs/reference/javascript/auth-api
+
 import { Hono } from "hono";
-import { supabase, supabaseAdmin } from "@lib/supabase";
+import { eq } from "drizzle-orm";
 import { db } from "@db/client";
 import { usersTable as users } from "@db/schema";
-import { eq } from "drizzle-orm";
+import { supabase, supabaseAdmin } from "@lib/supabase";
+import { Variables } from "../types";
+import { requireAuth } from "../middleware/requireAuth";
 
-const auth = new Hono();
+const auth = new Hono<{ Variables: Variables }>();
 
 // get user
-auth.get("/self", async (c) => {
+auth.get("/self", requireAuth, async (c) => {
   try {
-    const authHeader = c.req.header("Authorization");
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return c.json({ error: "Unauthorized. No token provided" }, 401);
-    }
-
-    const token = authHeader.replace("Bearer ", "");
-
-    // verify token with supabase
-    const { data: authData, error } = await supabase.auth.getUser(token);
-
-    if (error || !authData.user) {
-      return c.json({ error: "Invalid token" }, 401);
-    }
+    const authUser = c.get("user");
 
     const [user] = await db
       .select()
       .from(users)
-      .where(eq(users.id, authData.user.id));
+      .where(eq(users.id, authUser.id));
 
     if (!user) {
       return c.json({ error: "User not found" }, 404);
