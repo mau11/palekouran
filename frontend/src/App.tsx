@@ -7,6 +7,7 @@ import ProtectedLayout from "@components/ProtectedLayout";
 import Account from "@components/Account";
 import AuthContext from "@contexts/AuthContext";
 import useAuth from "@customHooks/useAuth";
+import DeckForm from "@components/DeckForm";
 
 function App() {
   const auth = useAuth();
@@ -23,6 +24,7 @@ function App() {
         </Route>
         <Route element={<ProtectedLayout />}>
           <Route path="/account" element={<Account />} />
+          <Route path="/deck/new" element={<DeckForm />} />
         </Route>
       </Routes>
     </AuthContext>

@@ -1,13 +1,23 @@
 // https://hono.dev/docs/getting-started/nodejs
 
+import "dotenv/config";
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
+// import { logger } from "hono/logger";
 import auth from "@routes/auth";
-import "dotenv/config";
+import deck from "@routes/decks";
 
 const port = Number(process.env.PORT) || 3000;
 const app = new Hono();
+
+export const omitUserId = (deck) => {
+  const { userId, ...rest } = deck;
+  return rest;
+};
+
+// middleware
+// app.use(logger());
 
 app.use(
   "/*",
@@ -17,8 +27,12 @@ app.use(
   })
 );
 
+// TODO add validation (zod?) + auth checks to each endpoint
+
+// routes
 app.route("/api/auth", auth);
+app.route("/api/decks", deck);
 
+// start server
 console.log(`Backend server running on port: ${port}`);
-
 serve({ fetch: app.fetch, port });

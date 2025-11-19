@@ -1,8 +1,10 @@
 import { useContext } from "react";
+import { useNavigate } from "react-router";
 import AuthContext from "@contexts/AuthContext";
 
 const Account = () => {
   const auth = useContext(AuthContext);
+  const navigate = useNavigate();
 
   if (!auth) {
     throw new Error("Account info not found");
@@ -29,7 +31,7 @@ const Account = () => {
       <section>
         <h2>My Decks</h2>
         <ul>{/* Loop through user decks */}</ul>
-        <button>Create New Deck</button>
+        <button onClick={() => navigate("/deck/new")}>Create New Deck</button>
       </section>
 
       {/* Account actions */}
