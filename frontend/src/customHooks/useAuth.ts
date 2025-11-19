@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import type { User } from "@backend/types";
+import type { User } from "@apiTypes";
 import { API_URL } from "@utils/api";
 import type { Session } from "@utils/types";
 

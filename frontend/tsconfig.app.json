@@ -24,7 +24,7 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
     "paths": {
-      "@backend/*": ["../backend/src/*"],
+      "@apiTypes": ["../backend/src/types"],
       "@components/*": ["./src/components/*"],
       "@contexts/*": ["./src/contexts/*"],
       "@customHooks/*": ["./src/customHooks/*"],

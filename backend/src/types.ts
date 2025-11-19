@@ -1,4 +1,4 @@
-import { SelectUser } from "./db/schema";
+import type { SelectUser } from "./db/schema";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
 
 export type User = SelectUser;
