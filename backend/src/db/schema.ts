@@ -6,8 +6,12 @@ export const usersTable = pgTable("users", {
   id: text("id").primaryKey(),
   username: text("username").notNull(),
   email: text("email").notNull(),
+  nativeLanguage: text("native_language").default("en"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
 });
 
 export type InsertUser = typeof usersTable.$inferInsert;
