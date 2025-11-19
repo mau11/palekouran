@@ -54,7 +54,7 @@ Create a [Supabase](https://supabase.com/). After logging in, navigate to you da
 If you need to apply changes to the database, you can generate migrations using drizzle's generate command then apply the changes with the migrate command:
 
 ```sh
-$ npx drizzle-kit generate --name=add_some_column_to_some_data
+$ npx drizzle-kit generate --name=add_some_column_to_some_table
 $ npx drizzle-kit migrate
 ```
 
@@ -78,10 +78,9 @@ $ cp .env.example .env
 | Environment Variable | Notes |
 | ------------------------ | -------------------------------------------------------------------------------------------------- |
 | PORT | port number (default: 3000) |
-| DATABASE_URL | PostgreSQL database name (format: postgresql://postgres:[password]@db.[project].supabase.co:5432/) |
+| DATABASE_URL | PostgreSQL database URL (format: postgresql://postgres:[password]@db.[project].supabase.co:5432/) |
 | SUPABASE_URL | Supabase project URL, found in Supabase dashboard |
 | SUPABASE_PUBLISHABLE_KEY | Supabase public api key found here: https://supabase.com/dashboard/project/*/settings/api-keys/ |
-| SUPABASE_SECRET_KEY | Supabase secret api key found here: https://supabase.com/dashboard/project/*/settings/api-keys/ |
 | SUPABASE_SECRET_KEY | Supabase secret api key found here: https://supabase.com/dashboard/project/*/settings/api-keys/ |
 | FRONTEND_URL | URL for frontend (default:http://localhost:5173 ) |
 
@@ -108,7 +107,9 @@ You can view the app in your browser at http://localhost:3000.
 
 View the latest deploy on Render at: https://palekouran.onrender.com. To try Palekouran out, sign up for a new account or use the credentials below.
 
-**username**: test
+_Please note that both the frontend and backend are running on Render’s free tier. The backend may sleep when inactive, so it can take a couple of minutes to wake up. The frontend loads instantly, but the app functionality may take a moment to fully initialize. This temporary slowdown will improve as development continues._
+
+**email**: test@example.com
 
 **password**: password
 
@@ -117,13 +118,18 @@ View the latest deploy on Render at: https://palekouran.onrender.com. To try Pal
 #### Documentation
 
 - Setup Drizzle + Supabase db + auth
+
   - https://orm.drizzle.team/docs/tutorials/drizzle-with-supabase
   - https://supabase.com/docs/guides/database/drizzle
+
+- React
+  - Contexts: https://react.dev/reference/react/createContext
+- React-Router: https://github.com/remix-run/react-router
 
 #### Data
 
 By default, Supabase enables sharing telemetry data. From the Supabase site:
 
-> "By opting in to sharing telemetry data, Supabase can analyze usage patterns to enhance user experience and use it for marketing and advertising purposes."
+> By opting in to sharing telemetry data, Supabase can analyze usage patterns to enhance user experience and use it for marketing and advertising purposes.
 
 You can disable this in your account settings, under **Analytics and Marketing** here: https://supabase.com/dashboard/account/me
