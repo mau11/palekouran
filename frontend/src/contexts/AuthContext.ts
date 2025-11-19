@@ -1,7 +1,7 @@
 // https://react.dev/reference/react/createContext#usage
 
 import { createContext } from "react";
-import type { User } from "@apiTypes";
+import type { User } from "@utils/types";
 import type { Session } from "@utils/types";
 
 export type AuthContextType = {
