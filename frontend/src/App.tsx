@@ -8,6 +8,7 @@ import Account from "@components/Account";
 import AuthContext from "@contexts/AuthContext";
 import useAuth from "@customHooks/useAuth";
 import DeckForm from "@components/DeckForm";
+import Decks from "@components/Decks";
 
 function App() {
   const auth = useAuth();
@@ -24,7 +25,10 @@ function App() {
         </Route>
         <Route element={<ProtectedLayout />}>
           <Route path="/account" element={<Account />} />
-          <Route path="/deck/new" element={<DeckForm />} />
+          <Route path="/decks">
+            <Route index element={<Decks />} />
+            <Route path="new" element={<DeckForm />} />
+          </Route>
         </Route>
       </Routes>
     </AuthContext>

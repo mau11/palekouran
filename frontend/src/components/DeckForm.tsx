@@ -46,7 +46,7 @@ const DeckForm = () => {
         throw new Error(data.error || "Deck creation failed");
       }
 
-      navigate("/account");
+      navigate("/decks");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Authentication failed");
     } finally {
@@ -100,7 +100,6 @@ const DeckForm = () => {
             id="notes"
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
-            required
           />
         </FormRow>
 

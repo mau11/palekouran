@@ -22,7 +22,9 @@ const Nav = () => {
         <Link to="/">Home</Link>
         {user?.id ? (
           <>
-            <Link to="/account">My Account</Link>
+            <Link to="/account">Account</Link>
+            <Link to="/decks">Decks</Link>
+            <span>{user.username}</span>
             <a onClick={handleSignOut}>Log out</a>
           </>
         ) : (

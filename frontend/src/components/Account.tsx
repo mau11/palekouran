@@ -16,7 +16,7 @@ const Account = () => {
     <section>
       {/* Header */}
       <header>
-        <h1>Welcome, {user?.username ?? "Learner"}!</h1>
+        <h1>Welcome, {user?.username}!</h1>
       </header>
 
       {/* show general stats */}
@@ -31,7 +31,7 @@ const Account = () => {
       <section>
         <h2>My Decks</h2>
         <ul>{/* Loop through user decks */}</ul>
-        <button onClick={() => navigate("/deck/new")}>Create New Deck</button>
+        <button onClick={() => navigate("/decks/new")}>Create New Deck</button>
       </section>
 
       {/* Account actions */}

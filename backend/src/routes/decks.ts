@@ -2,18 +2,37 @@
 // https://supabase.com/docs/reference/javascript/auth-api
 import { Hono } from "hono";
 import { createDeck } from "@db/queries/insert";
+import { getDecks } from "@db/queries/select";
+import { SelectDeck } from "@db/schema";
 import { omitUserId } from "../index";
+import { requireAuth } from "../middleware/requireAuth";
 
 const deck = new Hono();
 
 // get all decks
-deck.get("/", async (c) => {});
+deck.get("/", requireAuth, async (c) => {
+  try {
+    const userId = c.get("userId");
+    const decks: SelectDeck[] = await getDecks(userId);
+
+    return c.json(
+      {
+        message: "Decks retrieved successfully",
+        decks,
+      },
+      201
+    );
+  } catch (err) {
+    console.error("Error retrieving decks", err);
+    return c.json({ error: "Server error" }, 500);
+  }
+});
 
 // get deck by id
 deck.get("/:id", async (c) => {});
 
 // create deck
-deck.post("/", async (c) => {
+deck.post("/", requireAuth, async (c) => {
   try {
     const { userId, title, notes, sourceLanguage, targetLanguage, isPublic } =
       await c.req.json();
