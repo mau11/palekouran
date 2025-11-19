@@ -1,6 +1,8 @@
 # palekouran
 
-> Palekouran is a language learning assistant that helps users practice vocabulary through interactive flashcards that talk back. Users can record their own pronunciations, get AI-powered translations and definitions, and track their learning progress over time.
+![Static Badge](https://img.shields.io/badge/WORK%20IN%20PROGRESS-darkgreen)
+
+> Palekouran is a language learning assistant that helps users practice vocabulary through interactive flashcards that talk back. Users can record their own pronunciations, get AI-powered translations and definitions, and track their learning progress over time. Built with React, Node, and PostgreSQL, Palekouran bridges traditional flashcards with modern language immersion tools.
 
 ## Table of Contents
 
@@ -11,43 +13,77 @@
    1. [Running the Server](#running-the-server)
 1. [View Application](#view-application)
 1. [Deployment](#Deployment)
+1. [Additional Resources + Notes](#additional-resources--notes)
+   1. [Documentation](#documentation)
+   1. [Data](#data)
 
 ## Tech Stack
 
-- **JavaScript**
-- **CSS**
-- **EJS**
+#### Frontend:
+
+- **React**
+- **Vite**
+- **TypeScript**
+- **styled-components**
+
+#### Backend / Infrastructure:
+
 - **Node.js**
-- **Express**
-- **MongoDB**
-- **Mongoose**
+- **Hono (Express alternative, typescript-first framework)**
+- **Supabase PostgreSQL (with built in auth)**
+- **Drizzle ORM**
 - **Render**
 
 ## Requirements
 
-- Node v24.2.0
-- pnpm v10.6.2
+- Node v24.11.0
+- pnpm v11.6.0
 
 ## Development
 
+#### Notes
+
+- used $ pnpm create vite@latest to build frontend
+- frontend local dev on http://localhost:5173
+- deploying frontend + backend separately on render
+
 #### Setting up Database
 
-Setup up a [MongoDB Atlas account](https://www.mongodb.com/). Create a new database called `palekouran` with the collections: `users`, `decks` and `cards`.
+Create a [Supabase](https://supabase.com/). After logging in, navigate to you dashboard to create a new project called: `palekouran`. You can find more details in the offical Supabase docs: https://supabase.com/docs/guides/getting-started/quickstarts/reactjs.
+
+If you need to apply changes to the database, you can generate migrations using drizzle's generate command then apply the changes with the migrate command:
+
+```sh
+$ npx drizzle-kit generate --name=add_some_column_to_some_data
+$ npx drizzle-kit migrate
+```
 
 #### Environment Variables
 
-Run the command below to copy environment variables from the example, then add your values and save.
+Run the command below in both the base of your frontend + backend directories, to copy environment variables from the example, then add your values and save.
 
 ```sh
 $ cp .env.example .env
 ```
 
-| Environment Variable | Notes                                                                                                                                                 |
-| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| PORT                 | port number (default: 8000)                                                                                                                           |
-| DB_NAME              | MongoDB database name                                                                                                                                 |
-| DB_CONNECTION_STRING | MongoDB connection string in the format: `mongodb+srv://myDatabaseUser:D1fficultP%40ssw0rd@cluster0.example.mongodb.net/?retryWrites=true&w=majority` |
-| SESSION_SECRET       | complex session secret for password encryption (default: 'topsecret')                                                                                 |
+<br>
+
+**Frontend:**
+| Environment Variable | Notes |
+| -------------------- | ---------------------------------------------------- |
+| VITE_API_URL | URL for backend/api (default: http://localhost:3000) |
+<br>
+
+**Backend:**
+| Environment Variable | Notes |
+| ------------------------ | -------------------------------------------------------------------------------------------------- |
+| PORT | port number (default: 3000) |
+| DATABASE_URL | PostgreSQL database name (format: postgresql://postgres:[password]@db.[project].supabase.co:5432/) |
+| SUPABASE_URL | Supabase project URL, found in Supabase dashboard |
+| SUPABASE_PUBLISHABLE_KEY | Supabase public api key found here: https://supabase.com/dashboard/project/*/settings/api-keys/ |
+| SUPABASE_SECRET_KEY | Supabase secret api key found here: https://supabase.com/dashboard/project/*/settings/api-keys/ |
+| SUPABASE_SECRET_KEY | Supabase secret api key found here: https://supabase.com/dashboard/project/*/settings/api-keys/ |
+| FRONTEND_URL | URL for frontend (default:http://localhost:5173 ) |
 
 #### Installing Dependencies
 
@@ -58,7 +94,7 @@ $ pnpm install
 
 #### Running the Server
 
-Once dependencies have been installed, run the following command to start the development server:
+Once dependencies have been installed, run the following command twice: the root of the frontend directory to start the frontend/vite server and the root of the backend directory to start the hono server:
 
 ```sh
 $ pnpm dev
@@ -66,12 +102,28 @@ $ pnpm dev
 
 ## View Application
 
-You can view the app in your browser at http://localhost:8000.
+You can view the app in your browser at http://localhost:3000.
 
 ## Deployment
 
-View the latest deploy on Render at: https://palekouran.onrender.com. Sign up for a new account or use credentials below.
+View the latest deploy on Render at: https://palekouran.onrender.com. To try Palekouran out, sign up for a new account or use the credentials below.
 
 **username**: test
 
 **password**: password
+
+## Additional Resources + Notes
+
+#### Documentation
+
+- Setup Drizzle + Supabase db + auth
+  - https://orm.drizzle.team/docs/tutorials/drizzle-with-supabase
+  - https://supabase.com/docs/guides/database/drizzle
+
+#### Data
+
+By default, Supabase enables sharing telemetry data. From the Supabase site:
+
+> "By opting in to sharing telemetry data, Supabase can analyze usage patterns to enhance user experience and use it for marketing and advertising purposes."
+
+You can disable this in your account settings, under **Analytics and Marketing** here: https://supabase.com/dashboard/account/me
