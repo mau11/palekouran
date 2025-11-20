@@ -1,9 +1,11 @@
 // referenced: https://github.com/CarlosZiegler/hono-supabase
 // https://supabase.com/docs/reference/javascript/auth-api
 import { Hono } from "hono";
+import { eq, sql } from "drizzle-orm";
+import { db } from "@db/client";
 import { createCard, createDeck } from "@db/queries/insert";
 import { getCard, getDeck, getDeckOfCards, getDecks } from "@db/queries/select";
-import { SelectCard, SelectDeck } from "@db/schema";
+import { decksTable, SelectCard, SelectDeck } from "@db/schema";
 import { omitUserId } from "../index";
 import { requireAuth } from "../middleware/requireAuth";
 
@@ -144,15 +146,24 @@ deck.post("/:id/new", requireAuth, async (c) => {
       );
     }
 
-    const [card] = await createCard({
-      userId,
-      deckId,
-      word,
-      translation,
-      definition,
-      notes,
-      audioUrl,
-      category,
+    let card: SelectCard;
+
+    // https://orm.drizzle.team/docs/transactions
+    await db.transaction(async (tx) => {
+      [card] = await createCard({
+        userId,
+        deckId,
+        word,
+        translation,
+        definition,
+        notes,
+        audioUrl,
+        category,
+      });
+      await tx
+        .update(decksTable)
+        .set({ totalCards: sql`${decksTable.totalCards} + 1` })
+        .where(eq(decksTable.id, Number(deckId)));
     });
 
     return c.json(
