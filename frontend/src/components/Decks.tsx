@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import AuthContext from "@contexts/AuthContext";
-import { API_URL } from "@utils/api";
+import { getDecks } from "@lib/decks";
 
 const Decks = () => {
   const auth = useContext(AuthContext);
@@ -12,16 +12,19 @@ const Decks = () => {
 
   useEffect(() => {
     const fetchDecks = async () => {
-      const response = await fetch(`${API_URL}/api/decks`, {
-        headers: { Authorization: `Bearer ${auth?.session?.access_token}` },
-      });
+      const token = auth?.session?.access_token;
 
-      const { decks } = await response.json();
-      setDecks(decks);
-      setLoading(false);
+      if (token) {
+        const response = await getDecks(token);
+        const { decks } = response;
+        setDecks(decks);
+        setLoading(false);
+      } else {
+        navigate("/login");
+      }
     };
     fetchDecks();
-  }, []);
+  }, [auth?.session]);
 
   if (loading) return <p>Loading</p>;
 
@@ -31,8 +34,12 @@ const Decks = () => {
       <button onClick={() => navigate("/decks/new")}>Create New Deck</button>
       {decks?.length > 0 ? (
         decks.map((deck, i) => {
-          const { title } = deck;
-          return <p key={i}>{title}</p>;
+          const { title, id } = deck;
+          return (
+            <p key={i} onClick={() => navigate(`${id}`)}>
+              {title}
+            </p>
+          );
         })
       ) : (
         <p>You don't have any decks yet :(</p>

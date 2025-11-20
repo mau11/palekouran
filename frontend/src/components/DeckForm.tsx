@@ -2,7 +2,7 @@ import { useContext, useState } from "react";
 import { useNavigate } from "react-router";
 import { Form, FormRow, HeaderTwo, InputError, Label } from "../Global.styled";
 import AuthContext from "@contexts/AuthContext";
-import { API_URL } from "@utils/api";
+import { createDeck } from "@lib/decks";
 
 const DeckForm = () => {
   const auth = useContext(AuthContext);
@@ -26,27 +26,20 @@ const DeckForm = () => {
     setError("");
 
     try {
-      const body = {
-        userId: auth.user?.id,
-        title,
-        notes,
-        sourceLanguage,
-        targetLanguage,
-      };
+      const token = auth.session?.access_token;
 
-      const response = await fetch(`${API_URL}/api/decks`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
+      if (token) {
+        const body = {
+          userId: auth.user?.id,
+          title,
+          notes,
+          sourceLanguage,
+          targetLanguage,
+        };
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Deck creation failed");
+        await createDeck(token, body);
+        navigate("/decks");
       }
-
-      navigate("/decks");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Authentication failed");
     } finally {

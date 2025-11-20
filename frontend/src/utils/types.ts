@@ -15,3 +15,17 @@ export type User = {
   createdAt: Date;
   updatedAt: Date;
 };
+
+export type Deck = {
+  userId: string;
+  title: string;
+  sourceLanguage: string;
+  targetLanguage: string;
+  id?: number;
+  createdAt?: Date;
+  updatedAt?: Date;
+  notes?: string;
+  isPublic?: boolean;
+  totalCards?: number;
+};
+export type DeckNoUserId = Omit<Deck, "userId">;
