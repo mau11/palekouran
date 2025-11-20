@@ -1,7 +1,7 @@
 // referenced: https://github.com/CarlosZiegler/hono-supabase
 // https://supabase.com/docs/reference/javascript/auth-api
 import { Hono } from "hono";
-import { createDeck } from "@db/queries/insert";
+import { createCard, createDeck } from "@db/queries/insert";
 import { getDeckOfCards, getDecks } from "@db/queries/select";
 import { SelectCard, SelectDeck } from "@db/schema";
 import { omitUserId } from "../index";
@@ -79,6 +79,52 @@ deck.post("/", requireAuth, async (c) => {
     );
   } catch (err) {
     console.error("Deck creation error:", err);
+    return c.json({ error: "Server error" }, 500);
+  }
+});
+
+// create card
+deck.post("/:id/new", requireAuth, async (c) => {
+  try {
+    const {
+      userId,
+      deckId,
+      word,
+      translation,
+      definition,
+      notes,
+      audioUrl,
+      category,
+    } = await c.req.json();
+
+    if (!userId || !deckId || !word || !translation) {
+      return c.json(
+        { error: "User, deck, original word and translation are required" },
+        400
+      );
+    }
+
+    const [card] = await createCard({
+      userId,
+      deckId,
+      word,
+      translation,
+      definition,
+      notes,
+      audioUrl,
+      category,
+    });
+
+    return c.json(
+      {
+        message: "Card created successfully",
+        // remove userId before sending back
+        card: omitUserId(card),
+      },
+      201
+    );
+  } catch (err) {
+    console.error("Card creation error:", err);
     return c.json({ error: "Server error" }, 500);
   }
 });
