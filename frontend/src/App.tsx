@@ -9,6 +9,9 @@ import AuthContext from "@contexts/AuthContext";
 import useAuth from "@customHooks/useAuth";
 import DeckForm from "@components/DeckForm";
 import Decks from "@components/Decks";
+import DeckPage from "@components/DeckPage";
+import CardForm from "@components/Cards/CardForm";
+import CardPage from "@components/Cards/CardPage";
 
 function App() {
   const auth = useAuth();
@@ -28,6 +31,13 @@ function App() {
           <Route path="/decks">
             <Route index element={<Decks />} />
             <Route path="new" element={<DeckForm />} />
+            <Route path=":id">
+              <Route path="new" element={<CardForm />} />
+              <Route index element={<DeckPage />} />
+              <Route path=":id">
+                <Route index element={<CardPage />} />
+              </Route>
+            </Route>
           </Route>
         </Route>
       </Routes>
