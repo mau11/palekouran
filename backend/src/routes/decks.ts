@@ -2,8 +2,8 @@
 // https://supabase.com/docs/reference/javascript/auth-api
 import { Hono } from "hono";
 import { createDeck } from "@db/queries/insert";
-import { getDecks } from "@db/queries/select";
-import { SelectDeck } from "@db/schema";
+import { getDeckOfCards, getDecks } from "@db/queries/select";
+import { SelectCard, SelectDeck } from "@db/schema";
 import { omitUserId } from "../index";
 import { requireAuth } from "../middleware/requireAuth";
 
@@ -28,8 +28,26 @@ deck.get("/", requireAuth, async (c) => {
   }
 });
 
-// get deck by id
-deck.get("/:id", async (c) => {});
+// get deck of cards by deck id
+deck.get("/:id", requireAuth, async (c) => {
+  try {
+    const userId = c.get("userId");
+    const deckId = c.req.param("id");
+
+    const cards: SelectCard[] = await getDeckOfCards(userId, deckId);
+
+    return c.json(
+      {
+        message: "Cards retrieved successfully",
+        deck: cards,
+      },
+      201
+    );
+  } catch (err) {
+    console.error("Error retrieving cards", err);
+    return c.json({ error: "Server error" }, 500);
+  }
+});
 
 // create deck
 deck.post("/", requireAuth, async (c) => {
