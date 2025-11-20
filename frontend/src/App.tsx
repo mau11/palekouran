@@ -7,9 +7,9 @@ import ProtectedLayout from "@components/ProtectedLayout";
 import Account from "@components/Account";
 import AuthContext from "@contexts/AuthContext";
 import useAuth from "@customHooks/useAuth";
-import DeckForm from "@components/DeckForm";
+import DeckForm from "@components/Decks/DeckForm";
 import Decks from "@components/Decks";
-import DeckPage from "@components/DeckPage";
+import DeckPage from "@components/Decks/DeckPage";
 import CardForm from "@components/Cards/CardForm";
 import CardPage from "@components/Cards/CardPage";
 

@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { Link } from "react-router";
-import { HeaderOne } from "../Global.styled";
+import { HeaderOne } from "@globalStyles";
 import { NavHeader } from "./Nav.styled";
 import AuthContext from "@contexts/AuthContext";
 

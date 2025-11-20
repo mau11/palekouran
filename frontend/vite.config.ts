@@ -10,6 +10,7 @@ export default defineConfig({
       "@components": path.resolve(__dirname, "src/components"),
       "@contexts": path.resolve(__dirname, "src/contexts"),
       "@customHooks": path.resolve(__dirname, "src/customHooks"),
+      "@globalStyles": path.resolve(__dirname, "src/Global.styled"),
       "@lib": path.resolve(__dirname, "src/lib"),
       "@utils": path.resolve(__dirname, "src/utils"),
     },

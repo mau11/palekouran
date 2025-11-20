@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router";
-import { Form, FormRow, HeaderTwo, InputError, Label } from "../Global.styled";
+import { Form, FormRow, HeaderTwo, InputError, Label } from "@globalStyles";
 import { AuthSubtext } from "./AuthForm.styled";
 import AuthContext from "@contexts/AuthContext";
 import { API_URL } from "@utils/api";

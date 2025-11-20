@@ -25,6 +25,7 @@
       "@components/*": ["./src/components/*"],
       "@contexts/*": ["./src/contexts/*"],
       "@customHooks/*": ["./src/customHooks/*"],
+      "@globalStyles": ["./src/Global.styled"],
       "@lib/*": ["./src/lib/*"],
       "@utils/*": ["./src/utils/*"]
     }

@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router";
-import { Form, FormRow, HeaderTwo, InputError, Label } from "../Global.styled";
+import { Form, FormRow, HeaderTwo, InputError, Label } from "@globalStyles";
 import AuthContext from "@contexts/AuthContext";
 import { createDeck } from "@lib/decks";
 
