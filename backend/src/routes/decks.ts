@@ -2,7 +2,7 @@
 // https://supabase.com/docs/reference/javascript/auth-api
 import { Hono } from "hono";
 import { createCard, createDeck } from "@db/queries/insert";
-import { getDeckOfCards, getDecks } from "@db/queries/select";
+import { getCard, getDeck, getDeckOfCards, getDecks } from "@db/queries/select";
 import { SelectCard, SelectDeck } from "@db/schema";
 import { omitUserId } from "../index";
 import { requireAuth } from "../middleware/requireAuth";
@@ -34,17 +34,57 @@ deck.get("/:id", requireAuth, async (c) => {
     const userId = c.get("userId");
     const deckId = c.req.param("id");
 
+    const [info]: SelectDeck[] = await getDeck(userId, deckId);
+
+    if (!info) {
+      return c.json({ error: "Deck not found" }, 404);
+    }
+
     const cards: SelectCard[] = await getDeckOfCards(userId, deckId);
+
+    const data = {
+      info,
+      cards,
+    };
 
     return c.json(
       {
-        message: "Cards retrieved successfully",
-        deck: cards,
+        message: "Deck retrieved successfully",
+        data,
       },
       201
     );
   } catch (err) {
-    console.error("Error retrieving cards", err);
+    console.error("Error retrieving deck", err);
+    return c.json({ error: "Server error" }, 500);
+  }
+});
+
+// get card
+deck.get("/:deckId/:cardId", requireAuth, async (c) => {
+  try {
+    const userId = c.get("userId");
+    const deckId = c.req.param("deckId");
+    const cardId = c.req.param("cardId");
+
+    const cards: SelectCard[] = await getCard(userId, deckId, cardId);
+
+    // select * always returns an array of values even if there is just one result
+    const card = cards[0];
+
+    if (!card) {
+      return c.json({ error: "Card not found" }, 404);
+    }
+
+    return c.json(
+      {
+        message: "Card retrieved successfully",
+        data: { card },
+      },
+      201
+    );
+  } catch (err) {
+    console.error("Error retrieving card", err);
     return c.json({ error: "Server error" }, 500);
   }
 });

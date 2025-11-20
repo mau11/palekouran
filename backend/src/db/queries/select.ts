@@ -14,6 +14,16 @@ export async function getDecks(userId: string) {
     .where(eq(decksTable.userId, userId));
 }
 
+// get one deck
+export async function getDeck(userId: string, deckId: string) {
+  return await db
+    .select()
+    .from(decksTable)
+    .where(
+      and(eq(decksTable.id, Number(deckId)), eq(decksTable.userId, userId))
+    );
+}
+
 // get a deck of cards
 export async function getDeckOfCards(userId: string, deckId: string) {
   return await db
@@ -21,5 +31,19 @@ export async function getDeckOfCards(userId: string, deckId: string) {
     .from(cardsTable)
     .where(
       and(eq(cardsTable.deckId, Number(deckId)), eq(cardsTable.userId, userId))
+    );
+}
+
+// get one card
+export async function getCard(userId: string, deckId: string, cardId: string) {
+  return await db
+    .select()
+    .from(cardsTable)
+    .where(
+      and(
+        eq(cardsTable.id, Number(cardId)),
+        eq(cardsTable.deckId, Number(deckId)),
+        eq(cardsTable.userId, userId)
+      )
     );
 }
