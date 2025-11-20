@@ -56,3 +56,36 @@ export const decksTable = pgTable(
 
 export type InsertDeck = typeof decksTable.$inferInsert;
 export type SelectDeck = typeof decksTable.$inferSelect;
+
+// CARDS
+export const cardsTable = pgTable(
+  "cards",
+  {
+    id: serial("id").primaryKey(),
+    deckId: integer("deck_id")
+      .notNull()
+      .references(() => decksTable.id, { onDelete: "cascade" }),
+    userId: text("user_id")
+      .notNull()
+      .references(() => usersTable.id, { onDelete: "cascade" }),
+    word: text("word").notNull(),
+    translation: text("translation").notNull(),
+    definition: text("definition"),
+    notes: text("notes"), // user notes or examples for context
+    audioUrl: text("audio_url"), // url to user's audio recording
+    category: varchar("category", { length: 50 }), // food, travel, shopping etc
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .notNull()
+      .$onUpdate(() => new Date()),
+  },
+  (table) => [
+    index("cards_deck_id_idx").on(table.deckId),
+    index("cards_user_id_idx").on(table.userId),
+    index("cards_category_idx").on(table.category),
+  ]
+).enableRLS();
+
+export type InsertCard = typeof cardsTable.$inferInsert;
+export type SelectCard = typeof cardsTable.$inferSelect;
