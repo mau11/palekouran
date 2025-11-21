@@ -8,6 +8,7 @@ import { getCard, getDeck, getDeckOfCards, getDecks } from "@db/queries/select";
 import { decksTable, SelectCard, SelectDeck } from "@db/schema";
 import { omitUserId } from "../index";
 import { requireAuth } from "../middleware/requireAuth";
+import { deleteDeck } from "@db/queries/delete";
 
 const deck = new Hono();
 
@@ -22,7 +23,7 @@ deck.get("/", requireAuth, async (c) => {
         message: "Decks retrieved successfully",
         decks,
       },
-      201
+      200
     );
   } catch (err) {
     console.error("Error retrieving decks", err);
@@ -54,7 +55,7 @@ deck.get("/:id", requireAuth, async (c) => {
         message: "Deck retrieved successfully",
         data,
       },
-      201
+      200
     );
   } catch (err) {
     console.error("Error retrieving deck", err);
@@ -83,7 +84,7 @@ deck.get("/:deckId/:cardId", requireAuth, async (c) => {
         message: "Card retrieved successfully",
         data: { card },
       },
-      201
+      200
     );
   } catch (err) {
     console.error("Error retrieving card", err);
@@ -184,6 +185,33 @@ deck.post("/:id/new", requireAuth, async (c) => {
 deck.put("/:id", async (c) => {});
 
 // delete deck
-deck.delete("/:id", async (c) => {});
+deck.delete("/:id", requireAuth, async (c) => {
+  try {
+    const deckId = c.req.param("id");
+
+    if (!deckId) {
+      return c.json({ error: "Deck id required" }, 400);
+    }
+
+    await deleteDeck(Number(deckId));
+
+    // TODO check what is the best way to log deletion error
+    // deleted eq undefined on success and on error
+    // const [deleted] = await deleteDeck(Number(deckId));
+    // if (something) {
+    //   return c.json({ error: "Error deleting deck" }, 500);
+    // }
+
+    return c.json(
+      {
+        message: "Deck deleted successfully",
+      },
+      200
+    );
+  } catch (err) {
+    console.error("Deck deletion error:", err);
+    return c.json({ error: "Server error" }, 500);
+  }
+});
 
 export default deck;

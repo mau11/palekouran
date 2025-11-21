@@ -21,7 +21,7 @@ export type Deck = {
   title: string;
   sourceLanguage: string;
   targetLanguage: string;
-  id?: number;
+  id: number;
   createdAt?: Date;
   updatedAt?: Date;
   notes?: string;
