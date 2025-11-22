@@ -1,10 +1,14 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { Form, FormRow, HeaderTwo, InputError, Label } from "@globalStyles";
 import AuthContext from "@contexts/AuthContext";
-import { createDeck } from "@lib/decks";
+import { createDeck, editDeck, getDeckOfCards } from "@lib/decks";
 
-const DeckForm = () => {
+type DeckFormProps = {
+  deckId?: string;
+};
+
+const DeckForm = ({ deckId }: DeckFormProps) => {
   const auth = useContext(AuthContext);
 
   if (!auth) {
@@ -13,12 +17,39 @@ const DeckForm = () => {
 
   const navigate = useNavigate();
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [title, setTitle] = useState("");
-  const [notes, setNotes] = useState("");
   const [sourceLanguage, setSourceLanguage] = useState("");
   const [targetLanguage, setTargetLanguage] = useState("");
+  const [notes, setNotes] = useState("");
+
+  useEffect(() => {
+    if (deckId) {
+      const fetchDeck = async () => {
+        const accessToken = auth?.session?.access_token;
+
+        if (!accessToken) {
+          navigate("/login");
+          return;
+        }
+
+        try {
+          const response = await getDeckOfCards(deckId, accessToken);
+          const { info } = response.data;
+          setTitle(info.title);
+          setSourceLanguage(info.sourceLanguage);
+          setTargetLanguage(info.targetLanguage);
+          setNotes(info.notes);
+          setLoading(false);
+        } catch (err) {
+          console.error("Failed to load deck:", err);
+          navigate("/decks");
+        }
+      };
+      fetchDeck();
+    }
+  }, [deckId, auth?.session]);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -37,8 +68,13 @@ const DeckForm = () => {
           targetLanguage,
         };
 
-        await createDeck(token, body);
-        navigate("/decks");
+        if (deckId) {
+          await editDeck(token, body, deckId);
+          navigate(`/decks/${deckId}`);
+        } else {
+          await createDeck(token, body);
+          navigate("/decks");
+        }
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Authentication failed");
@@ -49,7 +85,7 @@ const DeckForm = () => {
 
   return (
     <section>
-      <HeaderTwo>Create a deck</HeaderTwo>
+      <HeaderTwo>{deckId ? "Edit Deck" : "Create a Deck"}</HeaderTwo>
 
       {error && <InputError>{error}</InputError>}
 
@@ -97,7 +133,7 @@ const DeckForm = () => {
         </FormRow>
 
         <button type="submit" disabled={loading}>
-          {loading ? "Loading..." : "Create"}
+          {loading ? "Loading..." : deckId ? "Save Changes" : "Create"}
         </button>
       </Form>
     </section>

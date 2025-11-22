@@ -1,7 +1,5 @@
 import { API_URL } from "@utils/api";
-import type { CardNoUserId, DeckNoUserId } from "@utils/types";
-
-export type DeckNoIds = Omit<DeckNoUserId, "id">;
+import type { CardNoUserId, DeckNoIds } from "@utils/types";
 
 type FetchAPIOptions = RequestInit & { token?: string };
 
@@ -40,6 +38,15 @@ export const getDeckOfCards = (id: string, token: string) => {
 export const createDeck = (token: string, data: DeckNoIds) => {
   return fetchAPI(`/api/decks`, {
     method: "POST",
+    token,
+    body: JSON.stringify(data),
+  });
+};
+
+// edit deck
+export const editDeck = (token: string, data: DeckNoIds, deckId: string) => {
+  return fetchAPI(`/api/decks/${deckId}`, {
+    method: "PATCH", // deck info is relatively small
     token,
     body: JSON.stringify(data),
   });

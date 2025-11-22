@@ -29,6 +29,9 @@ export type Deck = {
   totalCards?: number;
 };
 export type DeckNoUserId = Omit<Deck, "userId">;
+export type DeckNoIds = Omit<DeckNoUserId, "id"> & {
+  id?: number;
+};
 
 type Card = {
   id?: number;

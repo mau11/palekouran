@@ -1,14 +1,16 @@
 import { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 import AuthContext from "@contexts/AuthContext";
 import { usePathSegment } from "@customHooks/usePathSegment";
 import { deleteCard, deleteDeckOfCards, getDeckOfCards } from "@lib/decks";
 import type { CardNoUserId, DeckNoUserId } from "@utils/types";
+import DeckForm from "./DeckForm";
 
 const DeckPage = () => {
   const auth = useContext(AuthContext);
   const navigate = useNavigate();
   const deckId = usePathSegment(1);
+  const [params] = useSearchParams();
 
   const [deckInfo, setDeckInfo] = useState<DeckNoUserId>();
   const [cards, setCards] = useState<CardNoUserId[]>([]);
@@ -16,7 +18,7 @@ const DeckPage = () => {
   const [token, setToken] = useState("");
 
   useEffect(() => {
-    const fetchDecks = async () => {
+    const fetchDeck = async () => {
       const accessToken = auth?.session?.access_token;
 
       if (!accessToken) {
@@ -36,8 +38,16 @@ const DeckPage = () => {
         navigate("/decks");
       }
     };
-    fetchDecks();
-  }, [auth?.session]);
+    fetchDeck();
+  }, [deckId, auth?.session, params.toString()]);
+
+  if (params.get("action")) {
+    return <DeckForm deckId={deckId} />;
+  }
+
+  const handleEdit = async () => {
+    navigate(`/decks/${deckId}?action=edit`);
+  };
 
   const handleDelete = async (item: string, cardId: number) => {
     if (item === "deck") {
@@ -64,6 +74,10 @@ const DeckPage = () => {
           className="fa-solid fa-trash"
           onClick={() => handleDelete("deck", Number(deckId))}
         ></i>
+      </span>
+      <span>
+        Edit deck info
+        <i className="fa-solid fa-pen-to-square" onClick={handleEdit}></i>
       </span>
 
       <button onClick={() => navigate(`/decks/${deckId}/new`)}>

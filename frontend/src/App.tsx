@@ -30,10 +30,11 @@ function App() {
           <Route path="/account" element={<Account />} />
           <Route path="/decks">
             <Route index element={<Decks />} />
+            <Route path="?action=edit" element={<DeckForm />} />
             <Route path="new" element={<DeckForm />} />
             <Route path=":id">
-              <Route path="new" element={<CardForm />} />
               <Route index element={<DeckPage />} />
+              <Route path="new" element={<CardForm />} />
               <Route path=":id">
                 <Route index element={<CardPage />} />
               </Route>
