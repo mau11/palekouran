@@ -9,7 +9,7 @@ import { decksTable, SelectCard, SelectDeck } from "@db/schema";
 import { omitUserId } from "../index";
 import { requireAuth } from "../middleware/requireAuth";
 import { deleteCard, deleteDeck } from "@db/queries/delete";
-import { editDeck } from "@db/queries/update";
+import { editCard, editDeck } from "@db/queries/update";
 
 const deck = new Hono();
 
@@ -191,7 +191,7 @@ deck.patch("/:id", requireAuth, async (c) => {
       await c.req.json();
 
     if (!userId) {
-      return c.json({ error: "User s are required" }, 400);
+      return c.json({ error: "User id required" }, 400);
     }
 
     const [deck] = await editDeck(
@@ -216,6 +216,46 @@ deck.patch("/:id", requireAuth, async (c) => {
     );
   } catch (err) {
     console.error("Deck update error:", err);
+    return c.json({ error: "Server error" }, 500);
+  }
+});
+
+// edit card
+deck.patch("/:deckId/:cardId", requireAuth, async (c) => {
+  const userId = c.get("userId");
+  const deckId = c.req.param("deckId");
+  const cardId = c.req.param("cardId");
+
+  try {
+    const { word, translation, definition, notes, audioUrl, category } =
+      await c.req.json();
+
+    if (!userId) {
+      return c.json({ error: "User id required" }, 400);
+    }
+
+    const [deck] = await editCard({
+      id: Number(cardId),
+      userId,
+      deckId: Number(deckId),
+      word,
+      translation,
+      definition,
+      notes,
+      audioUrl,
+      category,
+    });
+
+    return c.json(
+      {
+        message: "Card updated successfully",
+        // remove userId before sending back
+        deck: omitUserId(deck),
+      },
+      201
+    );
+  } catch (err) {
+    console.error("Card update error:", err);
     return c.json({ error: "Server error" }, 500);
   }
 });
