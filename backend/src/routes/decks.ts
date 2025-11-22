@@ -8,7 +8,7 @@ import { getCard, getDeck, getDeckOfCards, getDecks } from "@db/queries/select";
 import { decksTable, SelectCard, SelectDeck } from "@db/schema";
 import { omitUserId } from "../index";
 import { requireAuth } from "../middleware/requireAuth";
-import { deleteDeck } from "@db/queries/delete";
+import { deleteCard, deleteDeck } from "@db/queries/delete";
 
 const deck = new Hono();
 
@@ -210,6 +210,32 @@ deck.delete("/:id", requireAuth, async (c) => {
     );
   } catch (err) {
     console.error("Deck deletion error:", err);
+    return c.json({ error: "Server error" }, 500);
+  }
+});
+
+// delete card
+deck.delete("/:deckId/:cardId", requireAuth, async (c) => {
+  try {
+    const deckId = c.req.param("deckId");
+    const cardId = c.req.param("cardId");
+
+    if (!deckId && !cardId) {
+      return c.json({ error: "Deck and card id required" }, 400);
+    }
+
+    await deleteCard(Number(deckId), Number(cardId));
+
+    // TODO check what is the best way to log deletion error
+
+    return c.json(
+      {
+        message: "Card deleted successfully",
+      },
+      200
+    );
+  } catch (err) {
+    console.error("Card deletion error:", err);
     return c.json({ error: "Server error" }, 500);
   }
 });
