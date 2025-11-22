@@ -9,6 +9,7 @@ import { decksTable, SelectCard, SelectDeck } from "@db/schema";
 import { omitUserId } from "../index";
 import { requireAuth } from "../middleware/requireAuth";
 import { deleteCard, deleteDeck } from "@db/queries/delete";
+import { editDeck } from "@db/queries/update";
 
 const deck = new Hono();
 
@@ -182,7 +183,42 @@ deck.post("/:id/new", requireAuth, async (c) => {
 });
 
 // edit deck
-deck.put("/:id", async (c) => {});
+deck.patch("/:id", requireAuth, async (c) => {
+  const deckId = c.req.param("id");
+
+  try {
+    const { userId, title, notes, sourceLanguage, targetLanguage, isPublic } =
+      await c.req.json();
+
+    if (!userId) {
+      return c.json({ error: "User s are required" }, 400);
+    }
+
+    const [deck] = await editDeck(
+      {
+        userId,
+        title,
+        notes,
+        sourceLanguage,
+        targetLanguage,
+        isPublic,
+      },
+      Number(deckId)
+    );
+
+    return c.json(
+      {
+        message: "Deck updated successfully",
+        // remove userId before sending back
+        deck: omitUserId(deck),
+      },
+      201
+    );
+  } catch (err) {
+    console.error("Deck update error:", err);
+    return c.json({ error: "Server error" }, 500);
+  }
+});
 
 // delete deck
 deck.delete("/:id", requireAuth, async (c) => {
