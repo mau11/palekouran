@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import AuthContext from "@contexts/AuthContext";
 import { usePathSegment } from "@customHooks/usePathSegment";
-import { deleteDeckOfCards, getDeckOfCards } from "@lib/decks";
+import { deleteCard, deleteDeckOfCards, getDeckOfCards } from "@lib/decks";
 import type { CardNoUserId, DeckNoUserId } from "@utils/types";
 
 const DeckPage = () => {
@@ -39,9 +39,14 @@ const DeckPage = () => {
     fetchDecks();
   }, [auth?.session]);
 
-  const handleDelete = async (id: number) => {
-    await deleteDeckOfCards(id, token);
-    navigate("/decks");
+  const handleDelete = async (item: string, cardId: number) => {
+    if (item === "deck") {
+      await deleteDeckOfCards(Number(deckId), token);
+      navigate("/decks");
+    } else {
+      item === "card" && (await deleteCard(Number(deckId), cardId, token));
+      setCards(cards.filter((card) => card.id !== cardId));
+    }
   };
 
   if (loading) return <p>Loading</p>;
@@ -57,7 +62,7 @@ const DeckPage = () => {
         Delete this deck
         <i
           className="fa-solid fa-trash"
-          onClick={() => handleDelete(Number(deckId))}
+          onClick={() => handleDelete("deck", Number(deckId))}
         ></i>
       </span>
 
@@ -70,9 +75,13 @@ const DeckPage = () => {
           cards.map((card) => {
             const { word, id } = card;
             return (
-              <p key={id} onClick={() => navigate(`${id}`)}>
-                {word}
-              </p>
+              <div key={id}>
+                <p onClick={() => navigate(`${id}`)}>{word}</p>
+                <i
+                  className="fa-solid fa-trash"
+                  onClick={() => handleDelete("card", Number(id))}
+                ></i>
+              </div>
             );
           })
         ) : (

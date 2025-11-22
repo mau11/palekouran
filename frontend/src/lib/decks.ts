@@ -36,20 +36,20 @@ export const getDeckOfCards = (id: string, token: string) => {
   return fetchAPI(`/api/decks/${id}`, { token });
 };
 
-// delete one deck, cascade delete cards within
-export const deleteDeckOfCards = (id: number, token: string) => {
-  return fetchAPI(`/api/decks/${id}`, {
-    method: "DELETE",
-    token,
-  });
-};
-
 // create deck
 export const createDeck = (token: string, data: DeckNoIds) => {
   return fetchAPI(`/api/decks`, {
     method: "POST",
     token,
     body: JSON.stringify(data),
+  });
+};
+
+// delete one deck, cascade delete cards within
+export const deleteDeckOfCards = (id: number, token: string) => {
+  return fetchAPI(`/api/decks/${id}`, {
+    method: "DELETE",
+    token,
   });
 };
 
@@ -64,5 +64,13 @@ export const createCard = (id: string, token: string, data: CardNoUserId) => {
     method: "POST",
     token,
     body: JSON.stringify(data),
+  });
+};
+
+// delete one card
+export const deleteCard = (deckId: number, cardId: number, token: string) => {
+  return fetchAPI(`/api/decks/${deckId}/${cardId}`, {
+    method: "DELETE",
+    token,
   });
 };
