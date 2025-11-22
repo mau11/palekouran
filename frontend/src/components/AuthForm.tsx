@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router";
 import { Form, FormRow, HeaderTwo, InputError, Label } from "@globalStyles";
 import { AuthSubtext } from "./AuthForm.styled";
@@ -21,6 +21,10 @@ const AuthForm = () => {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+
+  useEffect(() => {
+    setError("");
+  }, [isSignup]);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
