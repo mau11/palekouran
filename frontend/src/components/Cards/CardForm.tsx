@@ -82,7 +82,7 @@ const CardForm = ({ cardId }: CardFormProps) => {
           navigate(`/decks/${deckId}/${cardId}`);
         } else {
           await createCard(deckId, token, body);
-          navigate("/decks");
+          navigate(`/decks/${deckId}`);
         }
       }
     } catch (err) {

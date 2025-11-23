@@ -300,7 +300,14 @@ deck.delete("/:deckId/:cardId", requireAuth, async (c) => {
       return c.json({ error: "Deck and card id required" }, 400);
     }
 
-    await deleteCard(Number(deckId), Number(cardId));
+    // https://orm.drizzle.team/docs/transactions
+    await db.transaction(async (tx) => {
+      await deleteCard(Number(deckId), Number(cardId));
+      await tx
+        .update(decksTable)
+        .set({ totalCards: sql`${decksTable.totalCards} - 1` })
+        .where(eq(decksTable.id, Number(deckId)));
+    });
 
     // TODO check what is the best way to log deletion error
 

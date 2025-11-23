@@ -56,6 +56,14 @@ const DeckPage = () => {
     } else {
       item === "card" && (await deleteCard(Number(deckId), cardId, token));
       setCards(cards.filter((card) => card.id !== cardId));
+      setDeckInfo((prev) =>
+        prev
+          ? {
+              ...prev,
+              totalCards: (prev.totalCards || 0) - 1,
+            }
+          : prev
+      );
     }
   };
 

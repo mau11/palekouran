@@ -17,7 +17,7 @@ const DeckForm = ({ deckId }: DeckFormProps) => {
 
   const navigate = useNavigate();
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [title, setTitle] = useState("");
   const [sourceLanguage, setSourceLanguage] = useState("");
