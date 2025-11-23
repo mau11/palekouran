@@ -52,6 +52,20 @@ export const editDeck = (token: string, data: DeckNoIds, deckId: string) => {
   });
 };
 
+// edit card
+export const editCard = (
+  token: string,
+  data: CardNoUserId,
+  deckId: string,
+  cardId: string
+) => {
+  return fetchAPI(`/api/decks/${deckId}/${cardId}`, {
+    method: "PATCH", // card info is relatively small
+    token,
+    body: JSON.stringify(data),
+  });
+};
+
 // delete one deck, cascade delete cards within
 export const deleteDeckOfCards = (id: number, token: string) => {
   return fetchAPI(`/api/decks/${id}`, {

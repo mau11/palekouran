@@ -1,15 +1,17 @@
 import { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 import AuthContext from "@contexts/AuthContext";
 import { usePathSegment } from "@customHooks/usePathSegment";
 import { deleteCard, getCard } from "@lib/decks";
 import type { CardNoUserId } from "@utils/types";
+import CardForm from "./CardForm";
 
 const CardPage = () => {
   const auth = useContext(AuthContext);
   const navigate = useNavigate();
   const deckId = usePathSegment(1);
   const cardId = usePathSegment(2);
+  const [params] = useSearchParams();
 
   const [card, setCard] = useState<CardNoUserId>();
   const [loading, setLoading] = useState(true);
@@ -31,12 +33,20 @@ const CardPage = () => {
         setToken(accessToken);
         setLoading(false);
       } catch (err) {
-        console.error("Failed to load deck:", err);
-        navigate("/decks");
+        console.error("Failed to load card:", err);
+        navigate(`/decks/${deckId}`);
       }
     };
     fetchDecks();
-  }, [auth?.session]);
+  }, [deckId, cardId, auth?.session, params.toString()]);
+
+  if (params.get("action")) {
+    return <CardForm cardId={cardId} />;
+  }
+
+  const handleEdit = async () => {
+    navigate(`/decks/${deckId}/${cardId}?action=edit`);
+  };
 
   const handleDelete = async (cardId: number) => {
     await deleteCard(Number(deckId), cardId, token);
@@ -59,6 +69,10 @@ const CardPage = () => {
           className="fa-solid fa-trash"
           onClick={() => handleDelete(Number(cardId))}
         ></i>
+      </span>
+      <span>
+        Edit card info
+        <i className="fa-solid fa-pen-to-square" onClick={handleEdit}></i>
       </span>
     </>
   );

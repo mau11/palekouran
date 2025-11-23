@@ -1,11 +1,15 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { Form, FormRow, HeaderTwo, InputError, Label } from "@globalStyles";
 import AuthContext from "@contexts/AuthContext";
 import { usePathSegment } from "@customHooks/usePathSegment";
-import { createCard } from "@lib/decks";
+import { createCard, editCard, getCard } from "@lib/decks";
 
-const CardForm = () => {
+type CardFormProps = {
+  cardId?: string;
+};
+
+const CardForm = ({ cardId }: CardFormProps) => {
   const auth = useContext(AuthContext);
 
   if (!auth) {
@@ -19,10 +23,39 @@ const CardForm = () => {
   const [error, setError] = useState("");
   const [category, setCategory] = useState("");
   const [word, setWord] = useState("");
-  const [notes, setNotes] = useState("");
   const [translation, setTranslation] = useState("");
   const [definition, setDefinition] = useState("");
   const [audioUrl, setAudioUrl] = useState("");
+  const [notes, setNotes] = useState("");
+
+  useEffect(() => {
+    if (cardId) {
+      const fetchDeck = async () => {
+        const accessToken = auth?.session?.access_token;
+
+        if (!accessToken) {
+          navigate("/login");
+          return;
+        }
+
+        try {
+          const response = await getCard(deckId, cardId, accessToken);
+          const { card } = response.data;
+          setCategory(card.category);
+          setWord(card.word);
+          setTranslation(card.translation);
+          setNotes(card.notes);
+          setDefinition(card.definition);
+          setAudioUrl(card.audioUrl);
+          setLoading(false);
+        } catch (err) {
+          console.error("Failed to load card:", err);
+          navigate(`/decks/${cardId}`);
+        }
+      };
+      fetchDeck();
+    }
+  }, [deckId, auth?.session]);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -44,8 +77,13 @@ const CardForm = () => {
           category,
         };
 
-        await createCard(deckId, token, body);
-        navigate(`/decks/${deckId}`);
+        if (cardId) {
+          await editCard(token, body, deckId, cardId);
+          navigate(`/decks/${deckId}/${cardId}`);
+        } else {
+          await createCard(deckId, token, body);
+          navigate("/decks");
+        }
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Authentication failed");
@@ -56,7 +94,7 @@ const CardForm = () => {
 
   return (
     <section>
-      <HeaderTwo>Create a card</HeaderTwo>
+      <HeaderTwo>{cardId ? "Edit Card" : "Create a Card"}</HeaderTwo>
 
       {error && <InputError>{error}</InputError>}
 
@@ -121,7 +159,7 @@ const CardForm = () => {
         </FormRow>
 
         <button type="submit" disabled={loading}>
-          {loading ? "Loading..." : "Create"}
+          {loading ? "Loading..." : cardId ? "Save Changes" : "Create"}
         </button>
       </Form>
     </section>
