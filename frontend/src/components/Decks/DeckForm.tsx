@@ -91,7 +91,7 @@ const DeckForm = ({ deckId }: DeckFormProps) => {
 
       <Form onSubmit={handleSubmit}>
         <FormRow>
-          <Label htmlFor="title">Title</Label>
+          <Label htmlFor="title">Title*</Label>
           <input
             type="text"
             name="title"
@@ -103,18 +103,18 @@ const DeckForm = ({ deckId }: DeckFormProps) => {
         </FormRow>
 
         <FormRow>
-          <Label htmlFor="sourceLanguage">Source</Label>
+          <Label htmlFor="sourceLanguage">Source*</Label>
           <input
-            type="sourceLanguage"
+            type="text"
             name="sourceLanguage"
             id="sourceLanguage"
             value={sourceLanguage}
             onChange={(e) => setSourceLanguage(e.target.value)}
             required
           />
-          <Label htmlFor="targetLanguage">Target</Label>
+          <Label htmlFor="targetLanguage">Target*</Label>
           <input
-            type="targetLanguage"
+            type="text"
             name="targetLanguage"
             id="targetLanguage"
             value={targetLanguage}

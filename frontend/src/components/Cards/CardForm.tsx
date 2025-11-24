@@ -100,18 +100,18 @@ const CardForm = ({ cardId }: CardFormProps) => {
 
       <Form onSubmit={handleSubmit}>
         <FormRow>
-          <Label htmlFor="word">Word/Phrase</Label>
+          <Label htmlFor="word">Word/Phrase*</Label>
           <input
-            type="word"
+            type="text"
             name="word"
             id="word"
             value={word}
             onChange={(e) => setWord(e.target.value)}
             required
           />
-          <Label htmlFor="translation">Translation</Label>
+          <Label htmlFor="translation">Translation*</Label>
           <input
-            type="translation"
+            type="text"
             name="translation"
             id="translation"
             value={translation}
@@ -122,7 +122,7 @@ const CardForm = ({ cardId }: CardFormProps) => {
         <FormRow>
           <Label htmlFor="definition">Definition</Label>
           <input
-            type="definition"
+            type="text"
             name="definition"
             id="definition"
             value={definition}
@@ -130,7 +130,7 @@ const CardForm = ({ cardId }: CardFormProps) => {
           />
           <Label htmlFor="category">Category</Label>
           <input
-            type="category"
+            type="text"
             name="category"
             id="category"
             value={category}
@@ -148,9 +148,9 @@ const CardForm = ({ cardId }: CardFormProps) => {
           />
         </FormRow>
         <FormRow>
-          <Label htmlFor="audioUrl">Recording</Label>
+          <Label htmlFor="audioUrl">Record Word/Phrase</Label>
           <input
-            type="audioUrl"
+            type="text"
             name="audioUrl"
             id="audioUrl"
             value={audioUrl}
