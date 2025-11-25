@@ -7,6 +7,7 @@ import { cors } from "hono/cors";
 // import { logger } from "hono/logger";
 import auth from "@routes/auth";
 import deck from "@routes/decks";
+import uploads from "@routes/uploads";
 
 const port = Number(process.env.PORT) || 3000;
 const app = new Hono();
@@ -32,6 +33,7 @@ app.use(
 // routes
 app.route("/api/auth", auth);
 app.route("/api/decks", deck);
+app.route("/api/uploads", uploads);
 
 // start server
 console.log(`Backend server running on port: ${port}`);
