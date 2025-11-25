@@ -1,6 +1,15 @@
 import { useContext, useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router";
-import { Form, FormRow, HeaderTwo, InputError, Label } from "@globalStyles";
+import {
+  Form,
+  FormRow,
+  HeaderTwo,
+  InputError,
+  Label,
+  StyledInput,
+  SubmitButton,
+  Wrapper,
+} from "@globalStyles";
 import { AuthSubtext } from "./AuthForm.styled";
 import AuthContext from "@contexts/AuthContext";
 import { API_URL } from "@utils/api";
@@ -65,16 +74,15 @@ const AuthForm = () => {
   };
 
   return (
-    <section>
+    <Wrapper>
       <HeaderTwo>{isSignup ? "Sign up" : "Log in"}</HeaderTwo>
 
-      {error && <InputError>{error}</InputError>}
-
       <Form onSubmit={handleSubmit}>
+        {error && <InputError>{error}</InputError>}
         {isSignup && (
           <FormRow>
             <Label htmlFor="username">Username</Label>
-            <input
+            <StyledInput
               type="text"
               name="username"
               id="username"
@@ -87,7 +95,7 @@ const AuthForm = () => {
 
         <FormRow>
           <Label htmlFor="email">Email</Label>
-          <input
+          <StyledInput
             type="email"
             name="email"
             id="email"
@@ -99,7 +107,7 @@ const AuthForm = () => {
 
         <FormRow>
           <Label htmlFor="password">Password</Label>
-          <input
+          <StyledInput
             type="password"
             name="password"
             id="password"
@@ -109,9 +117,9 @@ const AuthForm = () => {
           />
         </FormRow>
 
-        <button type="submit" disabled={loading}>
+        <SubmitButton type="submit" disabled={loading}>
           {loading ? "Loading..." : isSignup ? "Sign up" : "Log in"}
-        </button>
+        </SubmitButton>
       </Form>
 
       <AuthSubtext>
@@ -120,7 +128,7 @@ const AuthForm = () => {
           {isSignup ? "Log in" : "Sign up"}
         </Link>
       </AuthSubtext>
-    </section>
+    </Wrapper>
   );
 };
 
