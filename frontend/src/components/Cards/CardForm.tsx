@@ -4,6 +4,8 @@ import { Form, FormRow, HeaderTwo, InputError, Label } from "@globalStyles";
 import AuthContext from "@contexts/AuthContext";
 import { usePathSegment } from "@customHooks/usePathSegment";
 import { createCard, editCard, getCard } from "@lib/decks";
+import AudioRecorder from "@components/AudioRecorder";
+import { uploadAudio } from "@lib/uploads";
 
 type CardFormProps = {
   cardId?: string;
@@ -27,6 +29,7 @@ const CardForm = ({ cardId }: CardFormProps) => {
   const [definition, setDefinition] = useState("");
   const [audioUrl, setAudioUrl] = useState("");
   const [notes, setNotes] = useState("");
+  const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
 
   useEffect(() => {
     if (cardId) {
@@ -40,13 +43,13 @@ const CardForm = ({ cardId }: CardFormProps) => {
 
         try {
           const response = await getCard(deckId, cardId, accessToken);
-          const { card } = response.data;
+          const { card, signedUrl } = response.data;
           setCategory(card.category);
           setWord(card.word);
           setTranslation(card.translation);
           setNotes(card.notes);
           setDefinition(card.definition);
-          setAudioUrl(card.audioUrl);
+          setAudioUrl(signedUrl);
           setLoading(false);
         } catch (err) {
           console.error("Failed to load card:", err);
@@ -57,6 +60,18 @@ const CardForm = ({ cardId }: CardFormProps) => {
     }
   }, [deckId, auth?.session]);
 
+  const processAudio = async (token: string) => {
+    if (audioBlob) {
+      const timestamp = Date.now();
+      const filename = `${timestamp}.webm`;
+
+      const { data } = await uploadAudio(filename, audioBlob, token, deckId);
+      return data;
+    } else {
+      return "";
+    }
+  };
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setLoading(true);
@@ -66,6 +81,7 @@ const CardForm = ({ cardId }: CardFormProps) => {
       const token = auth.session?.access_token;
 
       if (token) {
+        const audioUrl = await processAudio(token);
         const body = {
           userId: auth.user?.id,
           deckId: Number(deckId),
@@ -148,14 +164,16 @@ const CardForm = ({ cardId }: CardFormProps) => {
           />
         </FormRow>
         <FormRow>
-          <Label htmlFor="audioUrl">Record Word/Phrase</Label>
-          <input
-            type="text"
-            name="audioUrl"
-            id="audioUrl"
-            value={audioUrl}
-            onChange={(e) => setAudioUrl(e.target.value)}
-          />
+          <Label>Pronunciation Recording</Label>
+          {audioUrl && !audioBlob && (
+            <>
+              <audio src={audioUrl} controls />
+              <button type="button" onClick={() => setAudioUrl("")}>
+                Remove
+              </button>
+            </>
+          )}
+          {!audioUrl && <AudioRecorder setAudioBlob={setAudioBlob} />}
         </FormRow>
 
         <button type="submit" disabled={loading}>

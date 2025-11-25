@@ -16,6 +16,7 @@ const CardPage = () => {
   const [card, setCard] = useState<CardNoUserId>();
   const [loading, setLoading] = useState(true);
   const [token, setToken] = useState("");
+  const [audioUrl, setAudioUrl] = useState("");
 
   useEffect(() => {
     const fetchDecks = async () => {
@@ -28,8 +29,9 @@ const CardPage = () => {
 
       try {
         const response = await getCard(deckId, cardId, accessToken);
-        const { data } = response;
-        setCard(data.card);
+        const { card, signedUrl } = response.data;
+        setCard(card);
+        setAudioUrl(signedUrl);
         setToken(accessToken);
         setLoading(false);
       } catch (err) {
@@ -62,7 +64,7 @@ const CardPage = () => {
       <p>Translation: {card?.translation}</p>
       <p>Definition: {card?.definition}</p>
       <p>Notes: {card?.notes}</p>
-      <p>Audio: {card?.audioUrl}</p>
+      <audio controls src={audioUrl} />
       <span>
         Delete this card
         <i
