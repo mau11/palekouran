@@ -273,10 +273,25 @@ deck.patch("/:deckId/:cardId", requireAuth, async (c) => {
 // delete deck
 deck.delete("/:id", requireAuth, async (c) => {
   try {
+    const userId = c.get("userId");
     const deckId = c.req.param("id");
 
     if (!deckId) {
       return c.json({ error: "Deck id required" }, 400);
+    }
+
+    const cards = await getDeckOfCards(userId, deckId);
+
+    // delete audio from supabase storage, if exists
+    const audioPaths = cards.map((card) => card.audioUrl).filter(Boolean);
+    if (audioPaths.length > 0) {
+      const { error: storageError } = await supabaseAdmin.storage
+        .from(AUDIO_BUCKET)
+        .remove(audioPaths);
+
+      if (storageError) {
+        console.error("Error deleting deck audio from storage:", storageError);
+      }
     }
 
     await deleteDeck(Number(deckId));
@@ -303,11 +318,25 @@ deck.delete("/:id", requireAuth, async (c) => {
 // delete card
 deck.delete("/:deckId/:cardId", requireAuth, async (c) => {
   try {
+    const userId = c.get("userId");
     const deckId = c.req.param("deckId");
     const cardId = c.req.param("cardId");
 
     if (!deckId && !cardId) {
       return c.json({ error: "Deck and card id required" }, 400);
+    }
+
+    const card = await getCard(userId, deckId, cardId);
+
+    // delete audio from supabase storage, if exists
+    if (card[0].audioUrl) {
+      const { error: storageError } = await supabaseAdmin.storage
+        .from(AUDIO_BUCKET)
+        .remove([card[0].audioUrl]);
+
+      if (storageError) {
+        console.error("Error deleting card audio from storage:", storageError);
+      }
     }
 
     // https://orm.drizzle.team/docs/transactions
