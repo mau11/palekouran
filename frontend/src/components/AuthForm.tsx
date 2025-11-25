@@ -7,6 +7,7 @@ import { API_URL } from "@utils/api";
 
 const AuthForm = () => {
   const auth = useContext(AuthContext);
+  const navigate = useNavigate();
 
   if (!auth) {
     throw new Error("Account info not found");
@@ -14,7 +15,6 @@ const AuthForm = () => {
 
   const { handleAuthSuccess } = auth;
   const isSignup = useLocation().pathname === "/signup";
-  const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -24,6 +24,9 @@ const AuthForm = () => {
 
   useEffect(() => {
     setError("");
+    if (auth.session) {
+      navigate("/");
+    }
   }, [isSignup]);
 
   const handleSubmit = async (event: React.FormEvent) => {
