@@ -8,7 +8,7 @@ import { requireAuth } from "../middleware/requireAuth";
 
 const uploads = new Hono<{ Variables: Variables }>();
 
-const AUDIO_BUCKET = "pronunciations";
+export const AUDIO_BUCKET = "pronunciations";
 
 uploads.post("/audio/:deckId", requireAuth, async (c) => {
   try {
@@ -22,24 +22,19 @@ uploads.post("/audio/:deckId", requireAuth, async (c) => {
       return c.json({ error: "Missing audio file" }, 400);
     }
 
-    const path = `${userId}/${deckId}/`;
+    const path = `${userId}/${deckId}/${file.name}`;
 
     const { data, error } = await supabaseAdmin.storage
       .from(AUDIO_BUCKET)
-      .upload(path, file, { upsert: true });
+      .upload(path, file);
 
     if (error) {
       return c.json({ error: error.message }, 400);
     }
 
-    const publicUrl = supabaseAdmin.storage
-      .from("pronunciations")
-      .getPublicUrl(path);
-
-    return c.json(
-      { message: "Audio uploaded", data: publicUrl.data.publicUrl },
-      200
-    );
+    // only store path as bucket is private
+    // get signed url on page load instead
+    return c.json({ message: "Audio uploaded", data: path }, 200);
   } catch (err) {
     console.error("Error uploading audio", err);
     return c.json({ error: "Server error" }, 500);

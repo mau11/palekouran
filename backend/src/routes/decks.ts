@@ -10,6 +10,8 @@ import { omitUserId } from "../index";
 import { requireAuth } from "../middleware/requireAuth";
 import { deleteCard, deleteDeck } from "@db/queries/delete";
 import { editCard, editDeck } from "@db/queries/update";
+import { supabaseAdmin } from "@lib/supabase";
+import { AUDIO_BUCKET } from "./uploads";
 
 const deck = new Hono();
 
@@ -80,10 +82,14 @@ deck.get("/:deckId/:cardId", requireAuth, async (c) => {
       return c.json({ error: "Card not found" }, 404);
     }
 
+    const { data } = await supabaseAdmin.storage
+      .from(AUDIO_BUCKET)
+      .createSignedUrl(card.audioUrl, 60 * 60 * 24 * 7); // expires in 7 days, but fetches new url each api call
+
     return c.json(
       {
         message: "Card retrieved successfully",
-        data: { card },
+        data: { card, signedUrl: data.signedUrl },
       },
       200
     );
