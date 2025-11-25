@@ -64,7 +64,7 @@ const CardPage = () => {
       <p>Translation: {card?.translation}</p>
       <p>Definition: {card?.definition}</p>
       <p>Notes: {card?.notes}</p>
-      <audio controls src={audioUrl} />
+      {audioUrl && <audio controls src={audioUrl} />}
       <span>
         Delete this card
         <i

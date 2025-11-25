@@ -82,14 +82,18 @@ deck.get("/:deckId/:cardId", requireAuth, async (c) => {
       return c.json({ error: "Card not found" }, 404);
     }
 
-    const { data } = await supabaseAdmin.storage
-      .from(AUDIO_BUCKET)
-      .createSignedUrl(card.audioUrl, 60 * 60 * 24 * 7); // expires in 7 days, but fetches new url each api call
+    let signedUrl = "";
+    if (card.audioUrl) {
+      const { data } = await supabaseAdmin.storage
+        .from(AUDIO_BUCKET)
+        .createSignedUrl(card.audioUrl, 60 * 60 * 24 * 7); // expires in 7 days, but fetches new url each api call
+      signedUrl = data.signedUrl;
+    }
 
     return c.json(
       {
         message: "Card retrieved successfully",
-        data: { card, signedUrl: data.signedUrl },
+        data: { card, signedUrl },
       },
       200
     );

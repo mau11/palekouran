@@ -81,7 +81,12 @@ const CardForm = ({ cardId }: CardFormProps) => {
       const token = auth.session?.access_token;
 
       if (token) {
-        const audioUrl = await processAudio(token);
+        let audioUrl = "";
+
+        if (audioBlob) {
+          audioUrl = await processAudio(token);
+        }
+
         const body = {
           userId: auth.user?.id,
           deckId: Number(deckId),
