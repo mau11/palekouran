@@ -12,6 +12,7 @@ import DeckForm from "@components/Decks/DeckForm";
 import DeckPage from "@components/Decks/DeckPage";
 import CardForm from "@components/Cards/CardForm";
 import CardPage from "@components/Cards/CardPage";
+import About from "@components/About";
 
 function App() {
   const auth = useAuth();
@@ -23,6 +24,7 @@ function App() {
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
           <Route path="/login" element={<AuthForm />} />
           <Route path="/signup" element={<AuthForm />} />
         </Route>

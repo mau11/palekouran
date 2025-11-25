@@ -18,8 +18,6 @@ const useAuth = () => {
       fetchUser(token);
     } else {
       setLoading(false);
-      // if user is not authorized to view page, redirect to log in
-      navigate("/login");
     }
   }, []);
 
