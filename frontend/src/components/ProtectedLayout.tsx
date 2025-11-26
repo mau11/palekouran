@@ -18,7 +18,6 @@ const ProtectedLayout = () => {
     <>
       <Nav />
       <main>
-        THIS IS A PROTECTED ROUTE
         <Outlet />
       </main>
       <Footer />

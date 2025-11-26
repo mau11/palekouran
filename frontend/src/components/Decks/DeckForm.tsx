@@ -1,8 +1,20 @@
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { Form, FormRow, HeaderTwo, InputError, Label } from "@globalStyles";
+import {
+  Button,
+  Form,
+  FormRow,
+  Header,
+  HeaderOne,
+  InputError,
+  Label,
+  StyledInput,
+  Wrapper,
+} from "@globalStyles";
 import AuthContext from "@contexts/AuthContext";
 import { createDeck, editDeck, getDeckOfCards } from "@lib/decks";
+import { LANGUAGES } from "@utils/constants";
+import Loader from "@components/Loader";
 
 type DeckFormProps = {
   deckId?: string;
@@ -17,7 +29,7 @@ const DeckForm = ({ deckId }: DeckFormProps) => {
 
   const navigate = useNavigate();
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(deckId ? true : false);
   const [error, setError] = useState("");
   const [title, setTitle] = useState("");
   const [sourceLanguage, setSourceLanguage] = useState("");
@@ -41,10 +53,11 @@ const DeckForm = ({ deckId }: DeckFormProps) => {
           setSourceLanguage(info.sourceLanguage);
           setTargetLanguage(info.targetLanguage);
           setNotes(info.notes);
-          setLoading(false);
         } catch (err) {
           console.error("Failed to load deck:", err);
           navigate("/decks");
+        } finally {
+          setLoading(false);
         }
       };
       fetchDeck();
@@ -83,16 +96,18 @@ const DeckForm = ({ deckId }: DeckFormProps) => {
     }
   };
 
+  if (loading) return <Loader />;
+
   return (
-    <section>
-      <HeaderTwo>{deckId ? "Edit Deck" : "Create a Deck"}</HeaderTwo>
-
-      {error && <InputError>{error}</InputError>}
-
+    <Wrapper>
+      <Header>
+        <HeaderOne>{deckId ? "Edit Deck" : "Create a Deck"}</HeaderOne>
+      </Header>
       <Form onSubmit={handleSubmit}>
+        {error && <InputError>{error}</InputError>}
         <FormRow>
-          <Label htmlFor="title">Title*</Label>
-          <input
+          <Label htmlFor="title">Deck Title*</Label>
+          <StyledInput
             type="text"
             name="title"
             id="title"
@@ -103,25 +118,41 @@ const DeckForm = ({ deckId }: DeckFormProps) => {
         </FormRow>
 
         <FormRow>
-          <Label htmlFor="sourceLanguage">Source*</Label>
-          <input
-            type="text"
-            name="sourceLanguage"
+          <Label htmlFor="sourceLanguage">Translate from*</Label>
+          <select
             id="sourceLanguage"
+            name="sourceLanguage"
             value={sourceLanguage}
             onChange={(e) => setSourceLanguage(e.target.value)}
             required
-          />
-          <Label htmlFor="targetLanguage">Target*</Label>
-          <input
-            type="text"
-            name="targetLanguage"
+          >
+            <option value="">Select a language</option>
+            {LANGUAGES.map((lang) => (
+              <option key={lang.code} value={lang.code}>
+                {lang.name}
+              </option>
+            ))}
+          </select>
+        </FormRow>
+
+        <FormRow>
+          <Label htmlFor="targetLanguage">Translate to*</Label>
+          <select
             id="targetLanguage"
+            name="targetLanguage"
             value={targetLanguage}
             onChange={(e) => setTargetLanguage(e.target.value)}
             required
-          />
+          >
+            <option value="">Select a language</option>
+            {LANGUAGES.map((lang) => (
+              <option key={lang.code} value={lang.code}>
+                {lang.name}
+              </option>
+            ))}
+          </select>
         </FormRow>
+
         <FormRow>
           <Label htmlFor="notes">Notes</Label>
           <textarea
@@ -132,11 +163,11 @@ const DeckForm = ({ deckId }: DeckFormProps) => {
           />
         </FormRow>
 
-        <button type="submit" disabled={loading}>
+        <Button type="submit" disabled={loading}>
           {loading ? "Loading..." : deckId ? "Save Changes" : "Create"}
-        </button>
+        </Button>
       </Form>
-    </section>
+    </Wrapper>
   );
 };
 

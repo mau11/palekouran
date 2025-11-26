@@ -14,8 +14,6 @@ export const HeaderOne = styled.h1`
   font-weight: 600;
 `;
 
-export const HeaderTwo = styled.h2``;
-
 export const Header = styled.section`
   display: flex;
   justify-content: space-between;
@@ -177,5 +175,5 @@ export const EmptyState = styled.div`
 
 export const EmptyText = styled.p`
   font-size: 1.2rem;
-  color: #718096;
+  color: var(--grey);
 `;
