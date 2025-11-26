@@ -1,11 +1,23 @@
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { Form, FormRow, HeaderTwo, InputError, Label } from "@globalStyles";
+import {
+  Button,
+  Form,
+  FormRow,
+  FullSpan,
+  Header,
+  HeaderOne,
+  IconLinkWrapper,
+  InputError,
+  Label,
+  Wrapper,
+} from "@globalStyles";
 import AuthContext from "@contexts/AuthContext";
 import { usePathSegment } from "@customHooks/usePathSegment";
 import { createCard, editCard, getCard } from "@lib/decks";
 import AudioRecorder from "@components/AudioRecorder";
 import { uploadAudio } from "@lib/uploads";
+import Loader from "@components/Loader";
 
 type CardFormProps = {
   cardId?: string;
@@ -27,9 +39,10 @@ const CardForm = ({ cardId }: CardFormProps) => {
   const [word, setWord] = useState("");
   const [translation, setTranslation] = useState("");
   const [definition, setDefinition] = useState("");
-  const [audioUrl, setAudioUrl] = useState("");
   const [notes, setNotes] = useState("");
-  const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
+  const [playbackUrl, setPlaybackUrl] = useState(""); // signed URL for <audio />
+  const [storedAudioPath, setStoredAudioPath] = useState(""); // db path for audio
+  const [recordedBlob, setRecordedBlob] = useState<Blob | null>(null);
 
   useEffect(() => {
     if (cardId) {
@@ -48,8 +61,9 @@ const CardForm = ({ cardId }: CardFormProps) => {
           setWord(card.word);
           setTranslation(card.translation);
           setNotes(card.notes);
+          setStoredAudioPath(card.audioUrl);
           setDefinition(card.definition);
-          setAudioUrl(signedUrl);
+          setPlaybackUrl(signedUrl);
           setLoading(false);
         } catch (err) {
           console.error("Failed to load card:", err);
@@ -61,11 +75,11 @@ const CardForm = ({ cardId }: CardFormProps) => {
   }, [deckId, auth?.session]);
 
   const processAudio = async (token: string) => {
-    if (audioBlob) {
+    if (recordedBlob) {
       const timestamp = Date.now();
       const filename = `${timestamp}.webm`;
 
-      const { data } = await uploadAudio(filename, audioBlob, token, deckId);
+      const { data } = await uploadAudio(filename, recordedBlob, token, deckId);
       return data;
     } else {
       return "";
@@ -81,10 +95,16 @@ const CardForm = ({ cardId }: CardFormProps) => {
       const token = auth.session?.access_token;
 
       if (token) {
-        let audioUrl = "";
+        let finalAudioUrl = storedAudioPath;
 
-        if (audioBlob) {
-          audioUrl = await processAudio(token);
+        // user recorded new audio -> upload & replace
+        if (recordedBlob) {
+          finalAudioUrl = await processAudio(token);
+        }
+
+        // user removed audio -> playbackUrl is "", and no blob -> remove
+        if (!playbackUrl && !recordedBlob) {
+          finalAudioUrl = "";
         }
 
         const body = {
@@ -94,7 +114,7 @@ const CardForm = ({ cardId }: CardFormProps) => {
           translation,
           definition,
           notes,
-          audioUrl,
+          audioUrl: finalAudioUrl,
           category,
         };
 
@@ -113,9 +133,16 @@ const CardForm = ({ cardId }: CardFormProps) => {
     }
   };
 
+  if (loading) return <Loader />;
+
   return (
-    <section>
-      <HeaderTwo>{cardId ? "Edit Card" : "Create a Card"}</HeaderTwo>
+    <Wrapper>
+      <Header>
+        <HeaderOne>{cardId ? "Edit Card" : "Create a Card"}</HeaderOne>
+        <Button onClick={() => navigate(`/decks/${deckId}`)}>
+          Back to Deck
+        </Button>
+      </Header>
 
       {error && <InputError>{error}</InputError>}
 
@@ -170,22 +197,30 @@ const CardForm = ({ cardId }: CardFormProps) => {
         </FormRow>
         <FormRow>
           <Label>Pronunciation Recording</Label>
-          {audioUrl && !audioBlob && (
-            <>
-              <audio src={audioUrl} controls />
-              <button type="button" onClick={() => setAudioUrl("")}>
-                Remove
-              </button>
-            </>
+          {playbackUrl && !recordedBlob && (
+            <FullSpan>
+              <audio src={playbackUrl} controls />
+              <IconLinkWrapper>
+                <i
+                  onClick={() => {
+                    setPlaybackUrl("");
+                    setStoredAudioPath("");
+                  }}
+                  title="Remove Recording"
+                  className="fa-solid fa-trash"
+                ></i>
+              </IconLinkWrapper>
+              Remove
+            </FullSpan>
           )}
-          {!audioUrl && <AudioRecorder setAudioBlob={setAudioBlob} />}
+          {!playbackUrl && <AudioRecorder setRecordedBlob={setRecordedBlob} />}
         </FormRow>
 
-        <button type="submit" disabled={loading}>
+        <Button type="submit" disabled={loading}>
           {loading ? "Loading..." : cardId ? "Save Changes" : "Create"}
-        </button>
+        </Button>
       </Form>
-    </section>
+    </Wrapper>
   );
 };
 

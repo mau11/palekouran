@@ -5,12 +5,12 @@
 import { useState, useRef } from "react";
 
 type AudioRecorderProps = {
-  setAudioBlob: (blob: Blob) => void;
+  setRecordedBlob: (blob: Blob) => void;
 };
 
 const MAX_DURATION_MS = 10000; // 10 seconds
 
-const AudioRecorder = ({ setAudioBlob }: AudioRecorderProps) => {
+const AudioRecorder = ({ setRecordedBlob }: AudioRecorderProps) => {
   const [isRecording, setIsRecording] = useState(false);
   const [audioUrl, setAudioUrl] = useState("");
   const [currentAudio, setCurrentAudio] = useState<Blob | null>(null);
@@ -37,7 +37,7 @@ const AudioRecorder = ({ setAudioBlob }: AudioRecorderProps) => {
 
       setCurrentAudio(blob);
       setAudioUrl(url);
-      setAudioBlob(blob);
+      setRecordedBlob(blob);
 
       stream.getTracks().forEach((t) => t.stop());
     };

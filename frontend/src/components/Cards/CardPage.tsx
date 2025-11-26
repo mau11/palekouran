@@ -5,6 +5,19 @@ import { usePathSegment } from "@customHooks/usePathSegment";
 import { deleteCard, getCard } from "@lib/decks";
 import type { CardNoUserId } from "@utils/types";
 import CardForm from "./CardForm";
+import {
+  Button,
+  CardDetailSection,
+  DetailLabel,
+  DetailRow,
+  DetailValue,
+  FullSpan,
+  Header,
+  HeaderOne,
+  IconLinkWrapper,
+  Wrapper,
+} from "@globalStyles";
+import Loader from "@components/Loader";
 
 const CardPage = () => {
   const auth = useContext(AuthContext);
@@ -33,10 +46,11 @@ const CardPage = () => {
         setCard(card);
         setAudioUrl(signedUrl);
         setToken(accessToken);
-        setLoading(false);
       } catch (err) {
         console.error("Failed to load card:", err);
         navigate(`/decks/${deckId}`);
+      } finally {
+        setLoading(false);
       }
     };
     fetchDecks();
@@ -50,33 +64,75 @@ const CardPage = () => {
     navigate(`/decks/${deckId}/${cardId}?action=edit`);
   };
 
-  const handleDelete = async (cardId: number) => {
-    await deleteCard(Number(deckId), cardId, token);
-    navigate(`/decks/${deckId}`);
+  const handleDelete = async () => {
+    const confirmed = confirm(`Are you sure you'd like to delete this card?`);
+
+    if (confirmed) {
+      await deleteCard(Number(deckId), Number(cardId), token);
+      navigate(`/decks/${deckId}`);
+    }
   };
 
-  if (loading) return <p>Loading</p>;
+  if (loading) return <Loader />;
 
   return (
-    <>
-      <p>Category: {card?.category}</p>
-      <p>Word: {card?.word}</p>
-      <p>Translation: {card?.translation}</p>
-      <p>Definition: {card?.definition}</p>
-      <p>Notes: {card?.notes}</p>
-      {audioUrl && <audio controls src={audioUrl} />}
-      <span>
-        Delete this card
-        <i
-          className="fa-solid fa-trash"
-          onClick={() => handleDelete(Number(cardId))}
-        ></i>
-      </span>
-      <span>
-        Edit card info
-        <i className="fa-solid fa-pen-to-square" onClick={handleEdit}></i>
-      </span>
-    </>
+    <Wrapper>
+      <Header>
+        <HeaderOne>Card Details</HeaderOne>
+        <Button onClick={() => navigate(`/decks/${deckId}`)}>
+          Back to Deck
+        </Button>
+      </Header>
+
+      <CardDetailSection>
+        <DetailRow>
+          <DetailLabel>Category: </DetailLabel>
+          <DetailValue>{card?.category}</DetailValue>
+        </DetailRow>
+
+        <DetailRow>
+          <DetailLabel>Word/Phrase</DetailLabel>
+          <DetailValue>{card?.word}</DetailValue>
+        </DetailRow>
+
+        <DetailRow>
+          <DetailLabel>Translation</DetailLabel>
+          <DetailValue>{card?.translation}</DetailValue>
+        </DetailRow>
+
+        {card?.definition && (
+          <DetailRow>
+            <DetailLabel>Definition</DetailLabel>
+            <DetailValue>{card.definition}</DetailValue>
+          </DetailRow>
+        )}
+
+        {card?.notes && (
+          <DetailRow>
+            <DetailLabel>Notes</DetailLabel>
+            <DetailValue>{card.notes}</DetailValue>
+          </DetailRow>
+        )}
+
+        {audioUrl && (
+          <DetailRow>
+            <DetailLabel>Audio</DetailLabel>
+            <audio controls src={audioUrl} />
+          </DetailRow>
+        )}
+      </CardDetailSection>
+
+      <FullSpan>
+        <IconLinkWrapper>
+          Edit card{" "}
+          <i onClick={handleEdit} className="fa-solid fa-pen-to-square"></i>
+        </IconLinkWrapper>
+        <IconLinkWrapper>
+          Delete this card{" "}
+          <i onClick={handleDelete} className="fa-solid fa-trash"></i>
+        </IconLinkWrapper>
+      </FullSpan>
+    </Wrapper>
   );
 };
 
