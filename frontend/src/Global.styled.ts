@@ -12,6 +12,7 @@ export const Wrapper = styled.section`
 //
 export const HeaderOne = styled.h1`
   font-weight: 600;
+  color: var(--secondary);
 `;
 
 export const Header = styled.section`
@@ -73,7 +74,6 @@ export const Button = styled.button`
   border-radius: 6px;
   font-weight: 600;
   border: none;
-  margin-top: 0.5em;
   padding: 0.4em 1em;
   background-image: var(--3d-effect);
   transition: 0.25s all;
@@ -83,7 +83,7 @@ export const Button = styled.button`
   }
 
   &:hover:not(:disabled) {
-    background: var(--accent);
+    background-color: var(--accent);
   }
 
   &:disabled {
@@ -94,21 +94,7 @@ export const Button = styled.button`
 
 export const SubmitButton = styled(Button)`
   padding: 0.75rem;
-  background: var(--black);
-  color: var(--white);
-  border-radius: 6px;
-  font-weight: 600;
-  border: none;
-  margin-top: 0.5em;
-
-  &:hover:not(:disabled) {
-    background: var(--accent);
-  }
-
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
+  margin-top: 1em;
 `;
 
 //
@@ -116,12 +102,16 @@ export const SubmitButton = styled(Button)`
 //
 export const Grid = styled.section`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 1.5rem;
+
+  @media ${breakpoints.mobile.large} {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
 `;
 
 export const Card = styled.div`
-  background: var(--white);
+  background-color: var(--white);
   border-radius: 20px;
   padding: 2rem;
   border: 0.5px solid transparent;
@@ -168,7 +158,7 @@ export const CardDelete = styled.span`
 export const EmptyState = styled.div`
   text-align: center;
   padding: 4rem 2rem;
-  background: var(--white);
+  background-color: var(--white);
   border-radius: 20px;
   border: 2px dashed var(--extra-light-grey);
 `;

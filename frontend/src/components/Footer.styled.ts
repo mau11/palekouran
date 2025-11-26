@@ -3,54 +3,37 @@ import breakpoints from "@utils/breakpoints";
 
 export const FooterSection = styled.section`
   display: flex;
-  justify-content: end;
-  margin-left: -10vw;
-  width: calc(100% + 15vw);
-
-  p {
-    display: flex;
-    align-items: center;
-    justify-content: end;
-    gap: 4px;
-    margin: 2em 0;
-  }
-
-  a {
-    text-decoration: none;
-  }
+  position: fixed;
+  bottom: 0;
+  padding: 1em;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+  align-items: center;
+  gap: 6px;
+  color: var(--light-lilac);
+  background-color: var(--secondary);
+  background-image: var(--3d-effect);
 
   img {
     width: 20px;
   }
 
-  @media ${breakpoints.tablet.landscape} {
-    margin-left: unset;
-    width: unset;
-
-    a {
-      margin-right: 2em;
-    }
-  }
-
-  @media ${breakpoints.mobile.large} {
-    margin-left: unset;
-    width: unset;
-  }
-
   @media ${breakpoints.mobile.medium} {
-    p {
-      flex-direction: column;
-    }
-
-    a {
-      margin: auto;
-    }
+    flex-direction: column;
   }
 `;
 
-export const GitHub = styled.span`
+export const GitHubLink = styled.a`
   display: flex;
   justify-content: center;
+  text-decoration: none;
   align-items: center;
   gap: 4px;
+  background-color: var(--light-lilac);
+  border-radius: 50%;
+
+  &:hover {
+    transform: scale(1.05);
+  }
 `;
