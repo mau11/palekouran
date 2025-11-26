@@ -11,7 +11,7 @@ export const FooterSection = styled.section`
   width: 100%;
   align-items: center;
   gap: 6px;
-  color: var(--light-lilac);
+  color: var(--extra-light-grey);
   background-color: var(--secondary);
   background-image: var(--3d-effect);
 
@@ -30,7 +30,7 @@ export const GitHubLink = styled.a`
   text-decoration: none;
   align-items: center;
   gap: 4px;
-  background-color: var(--light-lilac);
+  background-color: var(--extra-light-grey);
   border-radius: 50%;
 
   &:hover {

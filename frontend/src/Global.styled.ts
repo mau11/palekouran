@@ -2,9 +2,13 @@ import styled from "styled-components";
 import breakpoints from "@utils/breakpoints";
 
 export const Wrapper = styled.section`
-  max-width: 90vw;
+  max-width: 80vw;
   margin: auto;
   padding: 2em 0;
+
+  @media ${breakpoints.tablet.landscape} {
+    max-width: 90vw;
+  }
 `;
 
 //
@@ -159,6 +163,7 @@ export const FullSpan = styled.span`
   display: flex;
   justify-content: space-between;
   margin: 0.5em 0 1.5em;
+  align-items: center;
 
   i {
     color: var(--accent2);
@@ -176,12 +181,42 @@ export const CardNotes = styled.p`
   font-style: italic;
 `;
 
+export const CardDetailSection = styled.section`
+  background-color: var(--white);
+  padding: 2rem;
+  border-radius: 20px;
+  border: 0.5px solid var(--extra-light-grey);
+  box-shadow: 0 2px 8px var(--opBlack);
+  margin: 2rem auto;
+  max-width: 600px;
+`;
+
 export const EmptyState = styled.div`
   text-align: center;
   padding: 4rem 2rem;
   background-color: var(--white);
   border-radius: 20px;
   border: 2px dashed var(--extra-light-grey);
+`;
+export const DetailRow = styled.div`
+  margin-bottom: 1.25rem;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+`;
+
+export const DetailLabel = styled.p`
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--grey);
+  margin-bottom: 0.25rem;
+`;
+
+export const DetailValue = styled.p`
+  font-size: 1.1rem;
+  color: var(--black);
+  line-height: 1.4;
 `;
 
 export const EmptyText = styled.p`

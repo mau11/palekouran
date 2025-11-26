@@ -13,11 +13,12 @@ import DeckPage from "@components/Decks/DeckPage";
 import CardForm from "@components/Cards/CardForm";
 import CardPage from "@components/Cards/CardPage";
 import About from "@components/About";
+import Loader from "@components/Loader";
 
 function App() {
   const auth = useAuth();
 
-  if (auth.loading) return <p>Loading...</p>;
+  if (auth.loading) return <Loader />;
 
   return (
     <AuthContext value={auth}>
@@ -32,14 +33,11 @@ function App() {
           <Route path="/account" element={<Account />} />
           <Route path="/decks">
             <Route index element={<Decks />} />
-            <Route path="?action=edit" element={<DeckForm />} />
             <Route path="new" element={<DeckForm />} />
-            <Route path=":id">
+            <Route path=":deckId">
               <Route index element={<DeckPage />} />
               <Route path="new" element={<CardForm />} />
-              <Route path=":id">
-                <Route index element={<CardPage />} />
-              </Route>
+              <Route path=":cardId" element={<CardPage />} />
             </Route>
           </Route>
         </Route>

@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router";
 import {
   Form,
   FormRow,
-  HeaderTwo,
+  HeaderOne,
   InputError,
   Label,
   StyledInput,
@@ -75,7 +75,7 @@ const AuthForm = () => {
 
   return (
     <Wrapper>
-      <HeaderTwo>{isSignup ? "Sign up" : "Log in"}</HeaderTwo>
+      <HeaderOne>{isSignup ? "Sign up" : "Log in"}</HeaderOne>
 
       <Form onSubmit={handleSubmit}>
         {error && <InputError>{error}</InputError>}

@@ -11,12 +11,16 @@ export const NavBar = styled.nav`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  max-width: 90vw;
+  max-width: 80vw;
   margin: auto;
   padding: 1em 0;
 
   i {
     color: var(--accent);
+  }
+
+  @media ${breakpoints.tablet.landscape} {
+    max-width: 90vw;
   }
 `;
 
@@ -25,7 +29,7 @@ export const NavLink = styled(Link)`
 
   h1 {
     font-size: 1.5em;
-    font-weight: 600;
+    font-weight: 900;
     color: var(--accent);
     display: flex;
     gap: 0.25em;
@@ -66,7 +70,7 @@ export const Burger = styled.div`
   span {
     width: 24px;
     height: 3px;
-    background: var(--black);
+    background-color: var(--black);
     border-radius: 2px;
   }
 
