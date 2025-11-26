@@ -13,6 +13,12 @@ export const Wrapper = styled.section`
 export const HeaderOne = styled.h1`
   font-weight: 600;
   color: var(--secondary);
+  font-size: 2rem;
+`;
+
+export const HeaderTwo = styled.h3`
+  font-weight: 600;
+  font-size: 1.15rem;
 `;
 
 export const Header = styled.section`
@@ -104,6 +110,7 @@ export const Grid = styled.section`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 1.5rem;
+  margin: 0.25em 0;
 
   @media ${breakpoints.mobile.large} {
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -148,11 +155,25 @@ export const CardInfo = styled.span`
   }
 `;
 
+export const FullSpan = styled.span`
+  display: flex;
+  justify-content: space-between;
+  margin: 0.5em 0 1.5em;
+
+  i {
+    color: var(--accent2);
+  }
+`;
+
 export const CardDelete = styled.span`
   position: absolute;
   top: 12px;
   right: 12px;
   color: var(--dark-red);
+`;
+
+export const CardNotes = styled.p`
+  font-style: italic;
 `;
 
 export const EmptyState = styled.div`
@@ -166,4 +187,16 @@ export const EmptyState = styled.div`
 export const EmptyText = styled.p`
   font-size: 1.2rem;
   color: var(--grey);
+`;
+
+export const IconLinkWrapper = styled.span`
+  cursor: pointer;
+
+  i {
+    margin-left: 3px;
+
+    &:hover {
+      transform: scale(1.03);
+    }
+  }
 `;
