@@ -42,6 +42,11 @@ export const Form = styled.form`
   margin: 1em 0 2em;
   max-width: 420px;
 
+  input[type="checkbox"] {
+    margin-right: 0.5em;
+    cursor: pointer;
+  }
+
   @media ${breakpoints.mobile.large} {
     margin: 0.5em 0 2em;
   }

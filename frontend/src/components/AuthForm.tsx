@@ -30,6 +30,7 @@ const AuthForm = () => {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     setError("");
@@ -73,6 +74,10 @@ const AuthForm = () => {
     }
   };
 
+  const handleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
   return (
     <Wrapper>
       <HeaderOne>{isSignup ? "Sign up" : "Log in"}</HeaderOne>
@@ -108,13 +113,22 @@ const AuthForm = () => {
         <FormRow>
           <Label htmlFor="password">Password</Label>
           <StyledInput
-            type="password"
+            type={showPassword ? "text" : "password"}
             name="password"
             id="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
           />
+          <span>
+            <input
+              type="checkbox"
+              id="showPassword"
+              name="showPassword"
+              onClick={handleShowPassword}
+            />
+            <label htmlFor="showPassword">Show password</label>
+          </span>
         </FormRow>
 
         <SubmitButton type="submit" disabled={loading}>
