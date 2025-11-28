@@ -28,12 +28,15 @@ const DeckPage = () => {
   const auth = useContext(AuthContext);
   const navigate = useNavigate();
   const deckId = usePathSegment(1);
-  const [params] = useSearchParams();
+  const [params, setParams] = useSearchParams();
 
   const [deckInfo, setDeckInfo] = useState<DeckNoUserId>();
   const [cards, setCards] = useState<CardNoUserId[]>([]);
   const [loading, setLoading] = useState(true);
   const [token, setToken] = useState("");
+  const [reversed, setReversed] = useState(false);
+  const [categories, setCategories] = useState<string[]>([]);
+  const [filter, setFilter] = useState(params.get("category") || "");
 
   useEffect(() => {
     const fetchDeck = async () => {
@@ -47,8 +50,17 @@ const DeckPage = () => {
       try {
         const response = await getDeckOfCards(deckId, accessToken);
         const { info, cards } = response.data;
+
+        // get unique categories from cards
+        const uniqueCategories: string[] = Array.from(
+          new Set(
+            cards.map((card: CardNoUserId) => card.category).filter(Boolean)
+          )
+        );
+
         setDeckInfo(info);
         setCards(cards);
+        setCategories(uniqueCategories);
         setToken(accessToken);
       } catch (err) {
         console.error("Failed to load deck:", err);
@@ -58,11 +70,24 @@ const DeckPage = () => {
       }
     };
     fetchDeck();
-  }, [deckId, auth?.session, params.toString()]);
+  }, [deckId, auth?.session]);
+
+  useEffect(() => {
+    setFilter(params.get("category") || "");
+  }, [params]);
 
   if (params.get("action")) {
     return <DeckForm deckId={deckId} />;
   }
+
+  const filteredCards = filter
+    ? cards.filter((card) => card.category === filter)
+    : cards;
+
+  const handleCategoryChange = (category: string) => {
+    setFilter(category);
+    category ? setParams({ category }) : setParams({});
+  };
 
   const getLangName = (code: string | undefined) => {
     if (!code) return "";
@@ -122,6 +147,11 @@ const DeckPage = () => {
           {getLangName(deckInfo?.targetLanguage)}
         </HeaderTwo>
         {deckInfo?.notes && <CardNotes>{deckInfo?.notes}</CardNotes>}
+        {cards?.length > 0 && (
+          <Button onClick={() => navigate(`/decks/${deckId}/study`)}>
+            Study Now
+          </Button>
+        )}
         <FullSpan>
           <IconLinkWrapper onClick={handleEdit}>
             Edit Deck
@@ -136,11 +166,41 @@ const DeckPage = () => {
         </FullSpan>
       </section>
 
-      <p>Total cards: {deckInfo?.totalCards}</p>
-      {cards?.length > 0 ? (
+      <FullSpan>
+        <p>Total cards: {deckInfo?.totalCards}</p>
+        {!!deckInfo?.totalCards && (
+          <>
+            <p>
+              <i className="fa-solid fa-filter"></i>Filter by:{" "}
+              <select
+                value={filter}
+                onChange={(e) => handleCategoryChange(e.target.value)}
+              >
+                <option value="">All</option>
+                {categories.map((cat) => (
+                  <option key={cat} value={cat}>
+                    {cat}
+                  </option>
+                ))}
+              </select>
+              {filter && (
+                <Button onClick={() => handleCategoryChange("")}>
+                  Clear Filter
+                </Button>
+              )}
+            </p>
+            <p onClick={() => setReversed(!reversed)}>
+              <i className="fa-solid fa-arrow-right-arrow-left fa-xs"></i>{" "}
+              Reverse
+            </p>
+          </>
+        )}
+      </FullSpan>
+
+      {filteredCards?.length > 0 ? (
         <Grid>
-          {cards.map((card) => {
-            const { word, id } = card;
+          {filteredCards.map((card) => {
+            const { word, id, translation } = card;
             return (
               <Card key={id} onClick={() => navigate(`${id}`)}>
                 <CardDelete
@@ -149,7 +209,7 @@ const DeckPage = () => {
                 >
                   <i className="fa-solid fa-trash"></i>
                 </CardDelete>
-                <CardTitle>{word}</CardTitle>
+                <CardTitle>{reversed ? translation : word}</CardTitle>
               </Card>
             );
           })}
