@@ -105,6 +105,10 @@ export const Button = styled.button`
     opacity: 0.6;
     cursor: not-allowed;
   }
+
+  &:disabled:hover {
+    transform: unset;
+  }
 `;
 
 export const SubmitButton = styled(Button)`
@@ -184,6 +188,7 @@ export const CardDelete = styled.span`
 
 export const CardNotes = styled.p`
   font-style: italic;
+  margin: 0.25em;
 `;
 
 export const CardDetailSection = styled.section`

@@ -14,6 +14,7 @@ import CardForm from "@components/Cards/CardForm";
 import CardPage from "@components/Cards/CardPage";
 import About from "@components/About";
 import Loader from "@components/Loader";
+import StudyView from "@components/Cards/StudyView";
 
 function App() {
   const auth = useAuth();
@@ -37,6 +38,7 @@ function App() {
             <Route path=":deckId">
               <Route index element={<DeckPage />} />
               <Route path="new" element={<CardForm />} />
+              <Route path="study" element={<StudyView />} />
               <Route path=":cardId" element={<CardPage />} />
             </Route>
           </Route>
