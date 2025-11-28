@@ -46,11 +46,26 @@ deck.get("/:id", requireAuth, async (c) => {
       return c.json({ error: "Deck not found" }, 404);
     }
 
-    const cards: SelectCard[] = await getDeckOfCards(userId, deckId);
+    const cards: (SelectCard & { signedUrl?: string })[] = await getDeckOfCards(
+      userId,
+      deckId
+    );
+
+    const updatedCards = await Promise.all(
+      cards.map(async (card) => {
+        if (card.audioUrl) {
+          const { data } = await supabaseAdmin.storage
+            .from(AUDIO_BUCKET)
+            .createSignedUrl(card.audioUrl, 60 * 60 * 24 * 7); // expires in 7 days, but fetches new url each api call
+          return { ...card, signedUrl: data.signedUrl };
+        }
+        return card;
+      })
+    );
 
     const data = {
-      info,
-      cards,
+      info: omitUserId(info),
+      cards: updatedCards,
     };
 
     return c.json(
