@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import breakpoints from "@utils/breakpoints";
-import { Button } from "@globalStyles";
 
 export const Card = styled.section`
   background-color: var(--white);
