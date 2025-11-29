@@ -136,6 +136,7 @@ auth.post("/signin", async (c) => {
         id: user.id,
         email: user.email,
         username: user.username,
+        createdAt: user.createdAt,
       },
       session: data.session,
     });
