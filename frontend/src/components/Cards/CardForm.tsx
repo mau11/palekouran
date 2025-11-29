@@ -4,12 +4,11 @@ import {
   Button,
   Form,
   FormRow,
-  FullSpan,
   Header,
   HeaderOne,
-  IconLinkWrapper,
   InputError,
   Label,
+  SmallButton,
   Wrapper,
 } from "@globalStyles";
 import AuthContext from "@contexts/AuthContext";
@@ -18,6 +17,7 @@ import { createCard, editCard, getCard } from "@lib/decks";
 import AudioRecorder from "@components/AudioRecorder";
 import { uploadAudio } from "@lib/uploads";
 import Loader from "@components/Loader";
+import { PlayerWrapper } from "./Card.styled";
 
 type CardFormProps = {
   cardId?: string;
@@ -33,7 +33,7 @@ const CardForm = ({ cardId }: CardFormProps) => {
   const deckId = usePathSegment(1);
   const navigate = useNavigate();
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(cardId ? true : false);
   const [error, setError] = useState("");
   const [category, setCategory] = useState("");
   const [word, setWord] = useState("");
@@ -198,20 +198,19 @@ const CardForm = ({ cardId }: CardFormProps) => {
         <FormRow>
           <Label>Pronunciation Recording</Label>
           {playbackUrl && !recordedBlob && (
-            <FullSpan>
+            <PlayerWrapper>
               <audio src={playbackUrl} controls />
-              <IconLinkWrapper>
-                <i
-                  onClick={() => {
-                    setPlaybackUrl("");
-                    setStoredAudioPath("");
-                  }}
-                  title="Remove Recording"
-                  className="fa-solid fa-trash"
-                ></i>
-              </IconLinkWrapper>
-              Remove
-            </FullSpan>
+              <SmallButton
+                $color="dark-red"
+                onClick={() => {
+                  setPlaybackUrl("");
+                  setStoredAudioPath("");
+                }}
+              >
+                <i title="Remove Recording" className="fa-solid fa-trash"></i>{" "}
+                Remove
+              </SmallButton>
+            </PlayerWrapper>
           )}
           {!playbackUrl && <AudioRecorder setRecordedBlob={setRecordedBlob} />}
         </FormRow>

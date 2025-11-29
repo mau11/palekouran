@@ -32,7 +32,7 @@ const CardPage = () => {
   const [audioUrl, setAudioUrl] = useState("");
 
   useEffect(() => {
-    const fetchDecks = async () => {
+    const fetchCard = async () => {
       const accessToken = auth?.session?.access_token;
 
       if (!accessToken) {
@@ -53,7 +53,7 @@ const CardPage = () => {
         setLoading(false);
       }
     };
-    fetchDecks();
+    fetchCard();
   }, [deckId, cardId, auth?.session, params.toString()]);
 
   if (params.get("action")) {
@@ -86,7 +86,7 @@ const CardPage = () => {
 
       <CardDetailSection>
         <DetailRow>
-          <DetailLabel>Category: </DetailLabel>
+          <DetailLabel>Category</DetailLabel>
           <DetailValue>{card?.category}</DetailValue>
         </DetailRow>
 
@@ -123,13 +123,11 @@ const CardPage = () => {
       </CardDetailSection>
 
       <FullSpan>
-        <IconLinkWrapper>
-          Edit card{" "}
-          <i onClick={handleEdit} className="fa-solid fa-pen-to-square"></i>
+        <IconLinkWrapper onClick={handleEdit}>
+          Edit card <i className="fa-solid fa-pen-to-square"></i>
         </IconLinkWrapper>
-        <IconLinkWrapper>
-          Delete this card{" "}
-          <i onClick={handleDelete} className="fa-solid fa-trash"></i>
+        <IconLinkWrapper onClick={handleDelete}>
+          Delete this card <i className="fa-solid fa-trash"></i>
         </IconLinkWrapper>
       </FullSpan>
     </Wrapper>

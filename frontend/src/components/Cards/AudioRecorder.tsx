@@ -2,10 +2,12 @@
 // https://github.com/mdn/dom-examples/tree/main/media/web-dictaphone
 // https://github.com/mdn/dom-examples/blob/main/media/web-dictaphone/scripts/app.js
 
+import { SmallButton } from "@globalStyles";
 import { useState, useRef } from "react";
+import { PlayerWrapper } from "./Cards/Card.styled";
 
 type AudioRecorderProps = {
-  setRecordedBlob: (blob: Blob) => void;
+  setRecordedBlob: (blob: Blob | null) => void;
 };
 
 const MAX_DURATION_MS = 10000; // 10 seconds
@@ -62,6 +64,22 @@ const AudioRecorder = ({ setRecordedBlob }: AudioRecorderProps) => {
     if (audioUrl) URL.revokeObjectURL(audioUrl);
     setCurrentAudio(null);
     setAudioUrl("");
+
+    // clear all state
+    setCurrentAudio(null);
+    setAudioUrl("");
+    setRecordedBlob(null);
+
+    // clear the chunks ref
+    chunksRef.current = [];
+
+    // stop any active recording and clean up media stream
+    if (recorderRef.current) {
+      if (recorderRef.current.state === "recording") {
+        recorderRef.current.stop();
+      }
+      recorderRef.current = null;
+    }
   };
 
   return (
@@ -69,24 +87,30 @@ const AudioRecorder = ({ setRecordedBlob }: AudioRecorderProps) => {
       {!currentAudio && (
         <>
           {!isRecording ? (
-            <button onClick={startRecording} type="button">
-              Start Recording
-            </button>
+            <>
+              <SmallButton onClick={startRecording} type="button">
+                <i className="fa-solid fa-microphone"></i> Start Recording
+              </SmallButton>
+            </>
           ) : (
-            <button onClick={stopRecording} type="button">
-              Stop
-            </button>
+            <SmallButton
+              $color="dark-red"
+              onClick={stopRecording}
+              type="button"
+            >
+              <i className="fa-solid fa-microphone fa-beat"></i> Stop
+            </SmallButton>
           )}
         </>
       )}
 
       {currentAudio && (
-        <>
-          <audio src={audioUrl} controls />
-          <button onClick={clearRecording} type="button">
+        <PlayerWrapper>
+          <audio src={audioUrl} controls controlsList="nodownload" />
+          <SmallButton onClick={clearRecording} type="button">
             Clear
-          </button>
-        </>
+          </SmallButton>
+        </PlayerWrapper>
       )}
     </div>
   );

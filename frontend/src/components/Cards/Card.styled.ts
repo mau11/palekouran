@@ -1,3 +1,4 @@
+import breakpoints from "@utils/breakpoints";
 import styled from "styled-components";
 
 export const CardContainer = styled.section`
@@ -27,4 +28,18 @@ export const Subtext = styled.p`
 
 export const AudioWrapper = styled.audio`
   margin: auto;
+`;
+
+export const PlayerWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.75em;
+
+  audio {
+    height: 2.5em;
+  }
+
+  @media ${breakpoints.mobile.large} {
+    flex-direction: column;
+  }
 `;
