@@ -15,13 +15,20 @@ import {
   CardTitle,
   EmptyState,
   EmptyText,
-  FullSpan,
   Grid,
   Header,
   HeaderOne,
   HeaderTwo,
   IconLinkWrapper,
   Wrapper,
+  DeckInfoSection,
+  DeckInfoRow,
+  DeckActions,
+  FilterControls,
+  FilterGroup,
+  FilterLabel,
+  CardCount,
+  ToggleButton,
 } from "@globalStyles";
 
 const DeckPage = () => {
@@ -48,6 +55,7 @@ const DeckPage = () => {
       }
 
       try {
+        setLoading(true);
         const response = await getDeckOfCards(deckId, accessToken);
         const { info, cards } = response.data;
 
@@ -70,7 +78,7 @@ const DeckPage = () => {
       }
     };
     fetchDeck();
-  }, [deckId, auth?.session]);
+  }, [deckId, auth?.session, params.get("action")]);
 
   useEffect(() => {
     setFilter(params.get("category") || "");
@@ -136,66 +144,76 @@ const DeckPage = () => {
           <i className="fa-solid fa-layer-group"></i> {deckInfo?.title}
         </HeaderOne>
         <Button onClick={() => navigate(`/decks/${deckId}/new`)}>
-          Add New Card
+          <i className="fa-solid fa-plus"></i> Add Card
         </Button>
       </Header>
 
-      <section>
-        <HeaderTwo>
-          {getLangName(deckInfo?.sourceLanguage)}{" "}
-          <i className="fa-solid fa-arrow-right-arrow-left fa-xs"></i>{" "}
-          {getLangName(deckInfo?.targetLanguage)}
-        </HeaderTwo>
+      <DeckInfoSection>
+        <DeckInfoRow>
+          <HeaderTwo>
+            {getLangName(deckInfo?.sourceLanguage)}
+            <i className="fa-solid fa-arrow-right-arrow-left fa-xs"></i>
+            {getLangName(deckInfo?.targetLanguage)}
+          </HeaderTwo>
+
+          {cards?.length > 0 && (
+            <Button onClick={() => navigate(`/decks/${deckId}/study`)}>
+              <i className="fa-solid fa-book-open"></i> Study Now
+            </Button>
+          )}
+        </DeckInfoRow>
+
         {deckInfo?.notes && <CardNotes>{deckInfo?.notes}</CardNotes>}
-        {cards?.length > 0 && (
-          <Button onClick={() => navigate(`/decks/${deckId}/study`)}>
-            Study Now
-          </Button>
-        )}
-        <FullSpan>
+
+        <DeckActions>
           <IconLinkWrapper onClick={handleEdit}>
-            Edit Deck
             <i className="fa-solid fa-pen-to-square"></i>
+            Edit Deck
           </IconLinkWrapper>
           <IconLinkWrapper
             onClick={(e) => handleDelete(e, "deck", Number(deckId))}
           >
-            Delete Deck
             <i className="fa-solid fa-trash"></i>
+            Delete Deck
           </IconLinkWrapper>
-        </FullSpan>
-      </section>
+        </DeckActions>
+      </DeckInfoSection>
 
-      <FullSpan>
-        <p>Total cards: {deckInfo?.totalCards}</p>
-        {!!deckInfo?.totalCards && (
-          <>
-            <p>
-              <i className="fa-solid fa-filter"></i>Filter by:{" "}
-              <select
-                value={filter}
-                onChange={(e) => handleCategoryChange(e.target.value)}
-              >
-                <option value="">All</option>
-                {categories.map((cat) => (
-                  <option key={cat} value={cat}>
-                    {cat}
-                  </option>
-                ))}
-              </select>
-              {filter && (
-                <Button onClick={() => handleCategoryChange("")}>
-                  Clear Filter
-                </Button>
-              )}
-            </p>
-            <p onClick={() => setReversed(!reversed)}>
-              <i className="fa-solid fa-arrow-right-arrow-left fa-xs"></i>{" "}
-              Reverse
-            </p>
-          </>
-        )}
-      </FullSpan>
+      {!!deckInfo?.totalCards && (
+        <>
+          <CardCount>
+            <i className="fa-solid fa-layer-group"></i>
+            {filteredCards.length}
+            {filteredCards.length === 1 ? " card" : " cards"}
+          </CardCount>
+          <FilterControls>
+            {categories.length > 0 && (
+              <FilterGroup>
+                <FilterLabel>
+                  <i className="fa-solid fa-filter"></i>
+                  Category:
+                </FilterLabel>
+                <select
+                  value={filter}
+                  onChange={(e) => handleCategoryChange(e.target.value)}
+                >
+                  <option value="">All Categories</option>
+                  {categories.map((cat) => (
+                    <option key={cat} value={cat}>
+                      {cat}
+                    </option>
+                  ))}
+                </select>
+              </FilterGroup>
+            )}
+
+            <ToggleButton onClick={() => setReversed(!reversed)}>
+              <i className="fa-solid fa-arrow-right-arrow-left"></i>
+              {reversed ? "Show Original" : "Show Translation"}
+            </ToggleButton>
+          </FilterControls>
+        </>
+      )}
 
       {filteredCards?.length > 0 ? (
         <Grid>
@@ -216,7 +234,16 @@ const DeckPage = () => {
         </Grid>
       ) : (
         <EmptyState>
-          <EmptyText>You don't have any cards yet :(</EmptyText>
+          <EmptyText>
+            {filter
+              ? "No cards found in this category"
+              : "You haven't added any cards yet :("}
+          </EmptyText>
+          {!filter && (
+            <Button onClick={() => navigate(`/decks/${deckId}/new`)}>
+              <i className="fa-solid fa-plus"></i> Create Your First Card
+            </Button>
+          )}
         </EmptyState>
       )}
     </Wrapper>

@@ -47,6 +47,7 @@ const DeckForm = ({ deckId }: DeckFormProps) => {
         }
 
         try {
+          setLoading(true);
           const response = await getDeckOfCards(deckId, accessToken);
           const { info } = response.data;
           setTitle(info.title);
@@ -66,7 +67,6 @@ const DeckForm = ({ deckId }: DeckFormProps) => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    setLoading(true);
     setError("");
 
     try {
@@ -91,8 +91,6 @@ const DeckForm = ({ deckId }: DeckFormProps) => {
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Authentication failed");
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -102,6 +100,11 @@ const DeckForm = ({ deckId }: DeckFormProps) => {
     <Wrapper>
       <Header>
         <HeaderOne>{deckId ? "Edit Deck" : "Create a Deck"}</HeaderOne>
+        {deckId && (
+          <Button onClick={() => navigate(`/decks/${deckId}`)}>
+            Back to Deck
+          </Button>
+        )}
       </Header>
       <Form onSubmit={handleSubmit}>
         {error && <InputError>{error}</InputError>}
