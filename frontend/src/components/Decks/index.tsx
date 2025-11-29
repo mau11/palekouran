@@ -15,6 +15,8 @@ import {
   Wrapper,
   EmptyState,
   EmptyText,
+  IconLinkWrapper,
+  CardContent,
 } from "@globalStyles";
 import Loader from "@components/Loader";
 
@@ -72,9 +74,15 @@ const Decks = () => {
   return (
     <Wrapper>
       <Header>
-        <HeaderOne>My Decks</HeaderOne>
-        <Button onClick={() => navigate("/decks/new")}>Create New Deck</Button>
+        <HeaderOne>
+          <i className="fa-solid fa-layer-group"></i>
+          My Decks
+        </HeaderOne>
+        <Button onClick={() => navigate("/decks/new")}>
+          <i className="fa-solid fa-plus"></i> Create Deck
+        </Button>
       </Header>
+
       {decks?.length > 0 ? (
         <Grid>
           {decks.map((deck) => {
@@ -87,23 +95,28 @@ const Decks = () => {
                 >
                   <i className="fa-solid fa-trash"></i>
                 </CardDelete>
-                <CardTitle>{title}</CardTitle>
-                <CardInfo>
-                  <p>
+
+                <CardContent>
+                  <CardTitle>{title}</CardTitle>
+                  <CardInfo>
                     {totalCards} {totalCards === 1 ? "Card" : "Cards"}
-                  </p>
-                  <i
-                    className="fa-solid fa-pen-to-square"
-                    onClick={(e) => handleEdit(e, id)}
-                  ></i>
-                </CardInfo>
+                  </CardInfo>
+
+                  <IconLinkWrapper onClick={(e) => handleEdit(e, id)}>
+                    <i className="fa-solid fa-pen-to-square"></i>
+                    Edit Deck
+                  </IconLinkWrapper>
+                </CardContent>
               </Card>
             );
           })}
         </Grid>
       ) : (
         <EmptyState>
-          <EmptyText>You don't have any decks yet :(</EmptyText>
+          <EmptyText>You haven't created any decks yet</EmptyText>
+          <Button onClick={() => navigate("/decks/new")}>
+            <i className="fa-solid fa-plus"></i> Create Your First Deck
+          </Button>
         </EmptyState>
       )}
     </Wrapper>
