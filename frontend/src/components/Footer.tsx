@@ -1,20 +1,33 @@
-import { FooterSection, GitHubLink } from "./Footer.styled";
+import { FooterSection, FooterLink } from "./Footer.styled";
 
 const Footer = () => {
   return (
     <FooterSection>
-      <span>&copy; 2025 Palekouran.</span>
-      <span>All rights reserved.</span>
-      <span>Created by Mau</span>
-      <GitHubLink
-        href="https://github.com/mau11/palekouran"
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="Visit Palekouran GitHub Repository"
-        title="Palekouran on GitHub"
-      >
-        <img src="/images/github-mark.png" alt="GitHub Logo" />
-      </GitHubLink>
+      <div>
+        <span>&copy; 2025 Palekouran.</span>
+        <span>All rights reserved.</span>
+      </div>
+      <span>
+        Created by Mau:
+        <FooterLink
+          href="https://github.com/mau11/palekouran"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Visit Palekouran GitHub Repository"
+          title="View Palekouran's source code"
+        >
+          <img src="/images/github.png" alt="GitHub Logo" />
+        </FooterLink>
+        <FooterLink
+          href="https://linkedin.com/in/mau11/"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="View Mau's LinkedIn Profile"
+          title="Visit Mau's LinkedIn"
+        >
+          <img src="/images/linkedin.png" alt="LinkedIn Logo" />
+        </FooterLink>
+      </span>
     </FooterSection>
   );
 };

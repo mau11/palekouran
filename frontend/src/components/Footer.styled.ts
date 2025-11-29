@@ -11,27 +11,41 @@ export const FooterSection = styled.section`
   width: 100%;
   align-items: center;
   gap: 6px;
-  color: var(--extra-light-grey);
+  color: var(--background);
   background-color: var(--secondary);
   background-image: var(--3d-effect);
+  box-shadow: 0 0 8px var(--secondary);
+
+  div {
+    display: flex;
+    gap: 6px;
+  }
+
+  span {
+    letter-spacing: 0.65px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  a {
+    display: flex;
+  }
 
   img {
     width: 20px;
   }
 
-  @media ${breakpoints.mobile.medium} {
+  @media ${breakpoints.mobile.large} {
     flex-direction: column;
   }
 `;
 
-export const GitHubLink = styled.a`
-  display: flex;
+export const FooterLink = styled.a`
   justify-content: center;
   text-decoration: none;
   align-items: center;
   gap: 4px;
-  background-color: var(--extra-light-grey);
-  border-radius: 50%;
 
   &:hover {
     transform: scale(1.05);

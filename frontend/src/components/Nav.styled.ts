@@ -4,7 +4,12 @@ import breakpoints from "@utils/breakpoints";
 
 export const Header = styled.header`
   background-color: var(--white);
-  box-shadow: 0 0 8px var(--accent);
+  box-shadow: 0 0 8px var(--primary);
+  position: fixed;
+  right: 0;
+  left: 0;
+  top: 0;
+  z-index: 1;
 `;
 
 export const NavBar = styled.nav`
@@ -14,10 +19,6 @@ export const NavBar = styled.nav`
   max-width: 80vw;
   margin: auto;
   padding: 1em 0;
-
-  i {
-    color: var(--accent);
-  }
 
   @media ${breakpoints.tablet.landscape} {
     max-width: 90vw;
@@ -30,7 +31,7 @@ export const NavLink = styled(Link)`
   h1 {
     font-size: 1.5em;
     font-weight: 900;
-    color: var(--accent);
+    color: var(--primary);
     display: flex;
     gap: 0.25em;
     align-items: center;
@@ -56,7 +57,7 @@ export const NavSection = styled.section<{ $open: boolean }>`
     right: 0;
     background-color: var(--white);
     padding: 1em 0;
-    box-shadow: 0 5px 10px -5px var(--light-grey);
+    box-shadow: 0 5px 10px -5px var(--grey-light);
     z-index: 10;
   }
 `;
@@ -81,6 +82,14 @@ export const Burger = styled.div`
 
 export const NavSpan = styled.span`
   cursor: pointer;
+
+  &:hover {
+    transform: scale(1.03);
+  }
+
+  i {
+    color: var(--secondary);
+  }
 `;
 
 export const ContextMenu = styled.div`
@@ -93,13 +102,13 @@ export const ContextMenu = styled.div`
   gap: 0.5em;
   background-color: var(--white);
   padding: 0.5em 1em;
-  box-shadow: 0 5px 8px -4px var(--light-grey);
+  box-shadow: 0 5px 8px -4px var(--grey-light);
   border-radius: 0 0 5px 5px;
   z-index: 20;
 `;
 
 export const NavLinkBtn = styled(NavLink)`
-  background-color: var(--accent);
+  background-color: var(--primary);
   color: var(--white);
   padding: 0.4em 1em;
   border-radius: 5px;
