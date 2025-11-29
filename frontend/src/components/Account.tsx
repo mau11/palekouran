@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import AuthContext from "@contexts/AuthContext";
-import { Button, Header, HeaderOne, Wrapper } from "@globalStyles";
+import { Button, Header, HeaderOne, SmallButton, Wrapper } from "@globalStyles";
 import {
   AccountGrid,
   AcctHeaderTwo,
@@ -12,7 +12,6 @@ import {
   EmptyContainer,
   EmptyState,
   InfoList,
-  SmallButton,
   StatCard,
   StatLabel,
   StatsGrid,

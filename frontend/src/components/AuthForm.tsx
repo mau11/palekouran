@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router";
 import {
   Form,
   FormRow,
+  Row,
   HeaderOne,
   InputError,
   Label,
@@ -120,7 +121,7 @@ const AuthForm = () => {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-          <span>
+          <Row>
             <input
               type="checkbox"
               id="showPassword"
@@ -128,7 +129,7 @@ const AuthForm = () => {
               onClick={handleShowPassword}
             />
             <label htmlFor="showPassword">Show password</label>
-          </span>
+          </Row>
         </FormRow>
 
         <SubmitButton type="submit" disabled={loading}>

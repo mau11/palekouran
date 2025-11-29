@@ -14,7 +14,7 @@ import {
 import AuthContext from "@contexts/AuthContext";
 import { usePathSegment } from "@customHooks/usePathSegment";
 import { createCard, editCard, getCard } from "@lib/decks";
-import AudioRecorder from "@components/AudioRecorder";
+import AudioRecorder from "@components/Cards/AudioRecorder";
 import { uploadAudio } from "@lib/uploads";
 import Loader from "@components/Loader";
 import { PlayerWrapper } from "./Card.styled";

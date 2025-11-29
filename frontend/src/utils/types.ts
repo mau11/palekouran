@@ -26,11 +26,12 @@ export type Deck = {
   updatedAt?: Date;
   notes?: string;
   isPublic?: boolean;
-  totalCards?: number;
+  totalCards: number;
 };
 export type DeckNoUserId = Omit<Deck, "userId">;
-export type DeckNoIds = Omit<DeckNoUserId, "id"> & {
+export type DeckNoIds = Omit<DeckNoUserId, "id" | "totalCards"> & {
   id?: number;
+  totalCards?: number;
 };
 
 type Card = {

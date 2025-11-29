@@ -12,8 +12,8 @@ export const LoadingContainer = styled.div`
 export const LoadingSpinner = styled.div`
   width: 60px;
   height: 60px;
-  border: 8px solid var(--extra-light-grey);
-  border-top-color: var(--opAccent);
+  border: 8px solid var(--grey-extra-light);
+  border-top-color: var(--primary);
   border-radius: 50%;
   animation: spin 1.25s linear infinite;
 

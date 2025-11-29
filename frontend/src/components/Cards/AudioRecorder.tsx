@@ -4,7 +4,7 @@
 
 import { SmallButton } from "@globalStyles";
 import { useState, useRef } from "react";
-import { PlayerWrapper } from "./Cards/Card.styled";
+import { PlayerWrapper } from "./Card.styled";
 
 type AudioRecorderProps = {
   setRecordedBlob: (blob: Blob | null) => void;

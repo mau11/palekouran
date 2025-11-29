@@ -108,13 +108,10 @@ export const ContextMenu = styled.div`
 `;
 
 export const NavLinkBtn = styled(NavLink)`
-  background-color: var(--primary);
+  background-image: var(--gradient-primary);
+  box-shadow: var(--shadow-md);
   color: var(--white);
   padding: 0.4em 1em;
   border-radius: 5px;
-  background-image: var(--3d-effect);
-
-  &:hover {
-    filter: brightness(0.9);
-  }
+  transition: all 0.2s ease;
 `;

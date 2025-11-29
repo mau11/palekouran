@@ -39,7 +39,6 @@ const StudyView = () => {
       try {
         const response = await getDeckOfCards(deckId, accessToken);
         const { info, cards } = response.data;
-        console.log(info);
         setDeckInfo(info);
         setCards(cards);
       } catch (err) {
@@ -80,7 +79,6 @@ const StudyView = () => {
   };
 
   const flip = () => setShowBack((v) => !v);
-  console.log(card);
 
   return (
     <Wrapper>

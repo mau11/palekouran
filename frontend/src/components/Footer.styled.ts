@@ -14,7 +14,7 @@ export const FooterSection = styled.section`
   color: var(--background);
   background-color: var(--secondary);
   background-image: var(--3d-effect);
-  box-shadow: 0 0 8px var(--secondary);
+  box-shadow: 0 0 8px var(--secondary-light);
 
   div {
     display: flex;

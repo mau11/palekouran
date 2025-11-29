@@ -152,11 +152,6 @@ export const DeckItem = styled.li`
   }
 `;
 
-export const SmallButton = styled(Button)`
-  padding: 0.4rem 0.9rem;
-  font-size: 0.85rem;
-`;
-
 export const EmptyState = styled.div`
   text-align: center;
   padding: 2rem;
