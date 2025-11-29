@@ -101,6 +101,10 @@ export const ButtonGroup = styled.div`
   display: flex;
   gap: 0.75rem;
   flex-wrap: wrap;
+
+  @media ${breakpoints.mobile.large} {
+    justify-content: center;
+  }
 `;
 
 export const DeckList = styled.ul`

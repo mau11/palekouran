@@ -43,3 +43,79 @@ export const PlayerWrapper = styled.div`
     flex-direction: column;
   }
 `;
+
+export const FullSpan = styled.span`
+  display: flex;
+  justify-content: space-between;
+  margin: 1em 0 1.5em;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1em;
+  padding: 1.25em 1.5em;
+  background-color: var(--white);
+  border-radius: 14px;
+  border: 1px solid var(--grey-extra-light);
+  box-shadow: var(--shadow-card);
+
+  i {
+    color: var(--accent);
+  }
+
+  select {
+    margin: 0 0.5em;
+    padding: 0.5em 0.75em;
+    font-size: 0.9rem;
+  }
+
+  p {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--secondary);
+  }
+`;
+
+export const DetailRow = styled.div`
+  margin-bottom: 1.75em;
+  padding-bottom: 1.25em;
+  border-bottom: 1px solid var(--grey-extra-light);
+
+  &:last-child {
+    margin-bottom: 0;
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+`;
+
+export const DetailLabel = styled.p`
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--grey);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 0.5em;
+`;
+
+export const DetailValue = styled.p`
+  font-size: 1.15rem;
+  color: var(--black);
+  line-height: 1.6;
+  font-weight: 500;
+`;
+
+export const CardDetailSection = styled.section`
+  background-color: var(--white);
+  padding: 2.5em;
+  border-radius: 20px;
+  border: 1px solid var(--grey-extra-light);
+  box-shadow: var(--shadow-md);
+  margin: 2em auto;
+  max-width: 650px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: var(--accent-light);
+  }
+`;

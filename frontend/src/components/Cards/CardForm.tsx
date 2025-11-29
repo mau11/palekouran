@@ -11,13 +11,13 @@ import {
   SmallButton,
   Wrapper,
 } from "@globalStyles";
+import { PlayerWrapper } from "./Card.styled";
 import AuthContext from "@contexts/AuthContext";
 import { usePathSegment } from "@customHooks/usePathSegment";
-import { createCard, editCard, getCard } from "@lib/decks";
 import AudioRecorder from "@components/Cards/AudioRecorder";
-import { uploadAudio } from "@lib/uploads";
 import Loader from "@components/Loader";
-import { PlayerWrapper } from "./Card.styled";
+import { createCard, editCard, getCard } from "@lib/decks";
+import { uploadAudio } from "@lib/uploads";
 
 type CardFormProps = {
   cardId?: string;

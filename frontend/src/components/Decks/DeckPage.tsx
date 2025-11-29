@@ -2,17 +2,14 @@ import { useContext, useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
 import AuthContext from "@contexts/AuthContext";
 import { usePathSegment } from "@customHooks/usePathSegment";
+import Loader from "@components/Loader";
 import { deleteCard, deleteDeckOfCards, getDeckOfCards } from "@lib/decks";
+import { LANGUAGES } from "@utils/constants";
 import type { CardNoUserId, DeckNoUserId } from "@utils/types";
 import DeckForm from "./DeckForm";
-import { LANGUAGES } from "@utils/constants";
-import Loader from "@components/Loader";
 import {
   Button,
   Card,
-  CardDelete,
-  CardNotes,
-  CardTitle,
   EmptyState,
   EmptyText,
   Grid,
@@ -21,15 +18,20 @@ import {
   HeaderTwo,
   IconLinkWrapper,
   Wrapper,
-  DeckInfoSection,
-  DeckInfoRow,
+} from "@globalStyles";
+import {
+  CardCount,
+  CardDelete,
+  CardNotes,
+  CardTitle,
   DeckActions,
+  DeckInfoRow,
+  DeckInfoSection,
   FilterControls,
   FilterGroup,
   FilterLabel,
-  CardCount,
   ToggleButton,
-} from "@globalStyles";
+} from "./Deck.styled";
 
 const DeckPage = () => {
   const auth = useContext(AuthContext);
@@ -105,6 +107,11 @@ const DeckPage = () => {
 
   const handleEdit = async () => {
     navigate(`/decks/${deckId}?action=edit`);
+  };
+
+  const handleEditCard = async (e: React.MouseEvent, cardId: number) => {
+    e.stopPropagation();
+    navigate(`/decks/${deckId}/${cardId}?action=edit`);
   };
 
   const handleDelete = async (
@@ -228,6 +235,10 @@ const DeckPage = () => {
                   <i className="fa-solid fa-trash"></i>
                 </CardDelete>
                 <CardTitle>{reversed ? translation : word}</CardTitle>
+                <IconLinkWrapper onClick={(e) => handleEditCard(e, id!)}>
+                  <i className="fa-solid fa-pen-to-square"></i>
+                  Edit Card
+                </IconLinkWrapper>
               </Card>
             );
           })}

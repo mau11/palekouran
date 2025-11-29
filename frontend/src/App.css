@@ -1,24 +1,72 @@
+/* AI generated color palette */
+
 :root {
+  /* main colors */
+  --primary: rgba(30, 58, 95, 1);
+  --primary-light: rgba(51, 88, 130, 1);
+  --primary-dark: rgba(15, 35, 60, 1);
+  --primaryOp10: rgba(30, 58, 95, 0.1);
+
+  --secondary: rgba(146, 124, 118, 1);
+  --secondary-light: rgba(212, 189, 183, 1);
+  --secondary-dark: rgba(127, 109, 104, 1);
+  --secondaryOp10: rgba(146, 124, 118, 0.1);
+  --secondaryOp50: rgba(146, 124, 118, 0.5);
+  --secondaryOp90: rgba(146, 124, 118, 0.9);
+
+  --accent: rgba(242, 196, 109, 1);
+  --accent-light: rgba(238, 211, 161, 1);
+  --accent-dark: rgba(186, 149, 82, 1);
+  --accentOp10: rgba(242, 196, 109, 0.1);
+
+  --background: rgba(250, 249, 248, 1);
   --black: rgba(45, 55, 72, 1);
-  --opBlack: rgba(0, 0, 0, 0.05);
-  --accent: rgba(47, 45, 143, 1);
-  --opAccent: rgba(47, 45, 143, 0.75);
-  --accent2: rgba(90, 103, 216, 1);
-  --opAccent2: rgba(90, 103, 216, 0.15);
-  --accent3: rgba(176, 196, 222, 1);
-  --secondary: rgba(49, 49, 58, 1);
+  --blackOp05: rgba(0, 0, 0, 0.05);
+
+  /* status colors */
+  --error: rgba(222, 104, 104, 1);
+  --success: rgba(116, 196, 145, 1);
+  --info: rgba(112, 149, 227, 1);
+
+  /* other colors */
   --white: rgba(255, 255, 255, 1);
-  --bg-white: rgba(248, 248, 255, 1);
   --grey: rgba(113, 128, 150, 1);
-  --light-grey: rgba(180, 180, 180, 1);
-  --extra-light-grey: rgba(226, 232, 240, 1);
-  --dark-red: rgb(189, 0, 0);
-  --error: rgba(220, 20, 60, 1);
+  --grey-light: rgba(180, 180, 180, 1);
+  --grey-extra-light: rgba(226, 232, 240, 1);
+  --dark-red: rgba(220, 38, 38, 1);
+
+  /* gradients */
   --3d-effect: -webkit-linear-gradient(
     top,
     rgba(0, 0, 0, 0),
     rgba(0, 0, 0, 0.15)
   );
+
+  --gradient-primary: linear-gradient(
+    135deg,
+    var(--primary) 0%,
+    var(--primary-light) 100%
+  );
+
+  --gradient-mixed: linear-gradient(
+    135deg,
+    var(--secondary-dark) 0%,
+    var(--primary-light) 100%
+  );
+
+  --gradient-mixed-op: linear-gradient(
+    135deg,
+    var(--secondaryOp10) 0%,
+    var(--primaryOp10) 100%
+  );
+
+  /* shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-secondary: 0 10px 20px -5px var(--secondaryOp90);
+  --shadow-card: 0 1px 3px 0 var(--primaryOp10),
+    0 1px 2px -1px var(--primaryOp10);
 }
 
 * {
@@ -26,46 +74,67 @@
   padding: 0;
   margin: 0;
   font-weight: unset;
-  letter-spacing: 0.4px;
+  letter-spacing: 0.3px;
 }
 
 *:not([class^="fa"]) {
   font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   margin: auto;
   color: var(--black);
-  background-color: var(--bg-white);
+  background-color: var(--background);
+  min-height: 100vh;
 }
 
 li {
   list-style: none;
 }
 
+a {
+  color: var(--black);
+}
+
 input,
 textarea,
-select,
-button {
-  padding: 0.5rem;
+select {
+  padding: 0.7em 0.9em;
+  border: 2px solid var(--grey-extra-light);
   border: 0.5px solid var(--black);
   border-radius: 6px;
   font-size: unset;
-}
-
-button,
-a {
-  cursor: pointer;
+  transition: all 0.2s ease;
+  background-color: var(--white);
 }
 
 input:focus,
 select:focus,
 textarea:focus {
   outline: none;
-  border-color: var(--accent);
-  box-shadow: 0 0 6px var(--accent);
+  border-color: var(--secondary);
+  box-shadow: 0 0 6px var(--secondary);
+  background-color: var(--white);
+  border-radius: 6px;
 }
 
 main {
-  margin-bottom: 120px;
+  margin: 60px 0;
+}
+
+/* selecting highlight color */
+::selection {
+  background-color: var(--accent-light);
+  color: var(--black);
+}
+
+/* tabbing elements outline */
+*:focus-visible {
+  outline: 2px solid var(--primary-light);
+  outline-offset: 2px;
+  border-radius: 2px;
 }

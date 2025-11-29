@@ -7,18 +7,15 @@ import {
   Button,
   Card,
   CardInfo,
-  CardDelete,
-  CardTitle,
   Grid,
   Header,
   HeaderOne,
   Wrapper,
   EmptyState,
   EmptyText,
-  IconLinkWrapper,
-  CardContent,
 } from "@globalStyles";
 import Loader from "@components/Loader";
+import { CardContent, CardDelete, CardTitle } from "./Deck.styled";
 
 const Decks = () => {
   const auth = useContext(AuthContext);
@@ -44,15 +41,6 @@ const Decks = () => {
     };
     fetchDecks();
   }, [auth?.session]);
-
-  const handleEdit = async (
-    e: React.MouseEvent,
-    deckId: DeckNoUserId["id"]
-  ) => {
-    e.stopPropagation();
-
-    navigate(`/decks/${deckId}?action=edit`);
-  };
 
   const handleDelete = async (
     e: React.MouseEvent,
@@ -101,11 +89,6 @@ const Decks = () => {
                   <CardInfo>
                     {totalCards} {totalCards === 1 ? "Card" : "Cards"}
                   </CardInfo>
-
-                  <IconLinkWrapper onClick={(e) => handleEdit(e, id)}>
-                    <i className="fa-solid fa-pen-to-square"></i>
-                    Edit Deck
-                  </IconLinkWrapper>
                 </CardContent>
               </Card>
             );

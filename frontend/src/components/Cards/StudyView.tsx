@@ -2,10 +2,10 @@ import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import AuthContext from "@contexts/AuthContext";
 import { usePathSegment } from "@customHooks/usePathSegment";
-import { Button, Header, HeaderOne, Wrapper } from "@globalStyles";
-import { getDeckOfCards } from "@lib/decks";
 import Loader from "@components/Loader";
+import { getDeckOfCards } from "@lib/decks";
 import type { CardNoUserId, DeckNoUserId } from "@utils/types";
+import { Button, Header, HeaderOne, Wrapper } from "@globalStyles";
 import {
   AudioWrapper,
   CardContainer,

@@ -1,23 +1,25 @@
 import { useContext, useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
 import AuthContext from "@contexts/AuthContext";
+import Loader from "@components/Loader";
 import { usePathSegment } from "@customHooks/usePathSegment";
 import { deleteCard, getCard } from "@lib/decks";
 import type { CardNoUserId } from "@utils/types";
 import CardForm from "./CardForm";
 import {
   Button,
-  CardDetailSection,
-  DetailLabel,
-  DetailRow,
-  DetailValue,
-  FullSpan,
   Header,
   HeaderOne,
   IconLinkWrapper,
   Wrapper,
 } from "@globalStyles";
-import Loader from "@components/Loader";
+import {
+  CardDetailSection,
+  DetailLabel,
+  DetailRow,
+  DetailValue,
+  FullSpan,
+} from "./Card.styled";
 
 const CardPage = () => {
   const auth = useContext(AuthContext);

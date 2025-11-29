@@ -2,8 +2,8 @@
 // https://github.com/mdn/dom-examples/tree/main/media/web-dictaphone
 // https://github.com/mdn/dom-examples/blob/main/media/web-dictaphone/scripts/app.js
 
-import { SmallButton } from "@globalStyles";
 import { useState, useRef } from "react";
+import { SmallButton } from "@globalStyles";
 import { PlayerWrapper } from "./Card.styled";
 
 type AudioRecorderProps = {
