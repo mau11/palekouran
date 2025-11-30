@@ -4,8 +4,8 @@ import styled from "styled-components";
 export const CardContainer = styled.section`
   border: 1px solid var(--black);
   border-radius: 8px;
-  padding: 2rem;
-  margin-top: 2rem;
+  padding: 2em 2em 1.5em;
+  margin-top: 2em;
   min-height: 200px;
   display: flex;
   flex-direction: column;
@@ -16,7 +16,7 @@ export const CardContainer = styled.section`
 `;
 
 export const NavWrapper = styled.section`
-  margin-top: 2rem;
+  margin-top: 2em;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -117,5 +117,22 @@ export const CardDetailSection = styled.section`
 
   &:hover {
     border-color: var(--accent-light);
+  }
+`;
+
+export const RatingSection = styled.section<{ $disabled?: boolean }>`
+  margin-top: 2em;
+  transition: all 0.2s ease;
+
+  i {
+    font-size: 1.75rem;
+  }
+
+  span:hover {
+    transform: scale(1.1);
+  }
+
+  span:active {
+    transform: scale(0.98);
   }
 `;

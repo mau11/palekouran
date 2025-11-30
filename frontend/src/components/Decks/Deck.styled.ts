@@ -91,6 +91,10 @@ export const CardNotes = styled.p`
   padding: 0.5em 1em;
   background-color: var(--accentOp10);
   border-left: 4px solid var(--accent);
+
+  @media ${breakpoints.mobile.large} {
+    margin: 0;
+  }
 `;
 
 export const CardDelete = styled.span`
@@ -121,6 +125,10 @@ export const DeckInfoRow = styled.div`
   align-items: center;
   flex-wrap: wrap;
   gap: 1em;
+
+  @media ${breakpoints.mobile.large} {
+    justify-content: center;
+  }
 `;
 
 export const DeckActions = styled.div`

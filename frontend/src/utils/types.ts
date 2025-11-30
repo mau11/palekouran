@@ -34,17 +34,29 @@ export type DeckNoIds = Omit<DeckNoUserId, "id" | "totalCards"> & {
   totalCards?: number;
 };
 
-type Card = {
-  id?: number;
+export type Card = {
   userId: string;
   deckId: number;
-  category?: string;
   word: string;
   translation: string;
-  definition?: string;
-  notes?: string;
-  audioUrl?: string;
+  id?: number;
   createdAt?: Date;
   updatedAt?: Date;
+  notes?: string;
+  definition?: string;
+  audioUrl?: string;
+  category?: string;
+  nextReviewAt: Date;
+  interval?: number;
 };
 export type CardNoUserId = Omit<Card, "userId">;
+
+export type CardReview = {
+  id?: number;
+  userId: string;
+  cardId: number;
+  rating: string;
+  reviewedAt?: Date;
+};
+
+export type CardReviewNoUserId = Omit<CardReview, "userId">;

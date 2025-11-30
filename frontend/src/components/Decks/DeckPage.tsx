@@ -151,7 +151,7 @@ const DeckPage = () => {
           <i className="fa-solid fa-layer-group"></i> {deckInfo?.title}
         </HeaderOne>
         <Button onClick={() => navigate(`/decks/${deckId}/new`)}>
-          <i className="fa-solid fa-plus"></i> Add Card
+          <i className="fa-solid fa-plus fa-xs"></i> Add Card
         </Button>
       </Header>
 
@@ -203,6 +203,7 @@ const DeckPage = () => {
                 <select
                   value={filter}
                   onChange={(e) => handleCategoryChange(e.target.value)}
+                  name="category"
                 >
                   <option value="">All Categories</option>
                   {categories.map((cat) => (

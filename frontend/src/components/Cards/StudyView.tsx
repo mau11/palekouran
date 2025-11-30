@@ -4,12 +4,27 @@ import AuthContext from "@contexts/AuthContext";
 import { usePathSegment } from "@customHooks/usePathSegment";
 import Loader from "@components/Loader";
 import { getDeckOfCards } from "@lib/decks";
-import type { CardNoUserId, DeckNoUserId } from "@utils/types";
-import { Button, Header, HeaderOne, Wrapper } from "@globalStyles";
+import { addReview } from "@lib/reviews";
+import type {
+  CardNoUserId,
+  CardReviewNoUserId,
+  DeckNoUserId,
+} from "@utils/types";
+import {
+  Button,
+  EmptyState,
+  EmptyText,
+  Header,
+  HeaderOne,
+  IconLinkWrapper,
+  Italic,
+  Wrapper,
+} from "@globalStyles";
 import {
   AudioWrapper,
   CardContainer,
   NavWrapper,
+  RatingSection,
   Subtext,
 } from "./Card.styled";
 
@@ -25,7 +40,11 @@ const StudyView = () => {
   const [deckInfo, setDeckInfo] = useState<DeckNoUserId | null>(null);
   const [cards, setCards] = useState<CardInfo[]>([]);
   const card = cards[currentIndex];
+  const now = new Date();
+
   const [showBack, setShowBack] = useState(false);
+  const [token, setToken] = useState("");
+  const [review, setReview] = useState("");
 
   useEffect(() => {
     const fetchDeck = async () => {
@@ -40,7 +59,13 @@ const StudyView = () => {
         const response = await getDeckOfCards(deckId, accessToken);
         const { info, cards } = response.data;
         setDeckInfo(info);
-        setCards(cards);
+
+        // filter out cards that do not need to be reviewed now
+        const spaceReppedCards = cards.filter(
+          (item: CardInfo) => now >= new Date(item.nextReviewAt)
+        );
+        setCards(spaceReppedCards);
+        setToken(accessToken);
       } catch (err) {
         console.error("Failed to load deck:", err);
         navigate("/decks");
@@ -56,10 +81,21 @@ const StudyView = () => {
   if (!card) {
     return (
       <Wrapper>
-        <p>No cards in this deck.</p>
-        <Button onClick={() => navigate(`/decks/${deckId}`)}>
-          Back to Deck
-        </Button>
+        <Header>
+          <HeaderOne>
+            <i className="fa-solid fa-layer-group"></i> {deckInfo?.title}
+          </HeaderOne>
+          <Button onClick={() => navigate(`/decks/${deckId}`)}>
+            Back to Deck
+          </Button>
+        </Header>
+
+        <EmptyState>
+          <EmptyText>No cards left to study</EmptyText>
+          <Button onClick={() => navigate(`/decks/${deckId}/new`)}>
+            <i className="fa-solid fa-plus fa-xs"></i> Add More Cards
+          </Button>
+        </EmptyState>
       </Wrapper>
     );
   }
@@ -80,10 +116,27 @@ const StudyView = () => {
 
   const flip = () => setShowBack((v) => !v);
 
+  const handleRating = async (
+    e: React.MouseEvent,
+    rating: CardReviewNoUserId["rating"]
+  ) => {
+    e.stopPropagation();
+    setReview(rating);
+    if (card.id) {
+      await addReview(token, {
+        rating,
+        cardId: card.id,
+      });
+    }
+  };
+
   return (
     <Wrapper>
       <Header>
-        <HeaderOne>Learning: {deckInfo?.title}</HeaderOne>
+        <HeaderOne>
+          <i className="fa-solid fa-book-open"></i>
+          {deckInfo?.title}
+        </HeaderOne>
         <Button onClick={() => navigate(`/decks/${deckId}`)}>
           Back to Deck
         </Button>
@@ -100,7 +153,33 @@ const StudyView = () => {
           <>
             <h2>{card.translation}</h2>
             {card.definition && <p>{card.definition}</p>}
-            {card.notes && <p>Notes: {card.notes}</p>}
+            {card.notes && <Italic>{card.notes}</Italic>}
+            <RatingSection>
+              <IconLinkWrapper
+                $color="error"
+                title="Hard"
+                onClick={(e) => handleRating(e, "hard")}
+                $disabled={(review && review !== "hard") || false}
+              >
+                <i className="fa-regular fa-face-frown"></i>
+              </IconLinkWrapper>
+              <IconLinkWrapper
+                $color="info"
+                title="Okay"
+                onClick={(e) => handleRating(e, "okay")}
+                $disabled={(review && review !== "okay") || false}
+              >
+                <i className="fa-regular fa-face-meh"></i>
+              </IconLinkWrapper>
+              <IconLinkWrapper
+                $color="success"
+                title="Easy!"
+                onClick={(e) => handleRating(e, "easy")}
+                $disabled={(review && review !== "easy") || false}
+              >
+                <i className="fa-regular fa-face-smile"></i>
+              </IconLinkWrapper>
+            </RatingSection>
           </>
         )}
       </CardContainer>

@@ -159,6 +159,7 @@ export const Button = styled.button`
   &:active:not(:disabled) {
     transform: translateY(0);
     box-shadow: var(--shadow-md);
+    transform: scale(0.98);
   }
 
   &:disabled {
@@ -276,7 +277,10 @@ export const EmptyText = styled.p`
   margin-bottom: 1em;
 `;
 
-export const IconLinkWrapper = styled.span`
+export const IconLinkWrapper = styled.span<{
+  $color?: string;
+  $disabled?: boolean;
+}>`
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -285,7 +289,7 @@ export const IconLinkWrapper = styled.span`
   border-radius: 10px;
   transition: all 0.2s ease;
   font-weight: 600;
-  color: var(--secondary);
+  color: var(--${({ $color }) => ($color ? $color : "secondary")});
   font-size: 0.85rem;
 
   i {
@@ -295,10 +299,26 @@ export const IconLinkWrapper = styled.span`
 
   &:hover {
     background-color: var(--primaryOp01);
-    color: var(--secondary-dark);
+    color: var(--${({ $color }) => ($color ? $color : "secondary-dark")});
   }
 
   &:active {
     transform: translateY(0);
   }
+
+  ${({ $disabled }) =>
+    $disabled &&
+    css`
+      &:hover {
+        transform: unset;
+      }
+
+      i {
+        color: var(--grey-light);
+      }
+    `}
+`;
+
+export const Italic = styled.p`
+  font-style: italic;
 `;
