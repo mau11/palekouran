@@ -79,6 +79,8 @@ export const cardsTable = pgTable(
       .defaultNow()
       .notNull()
       .$onUpdate(() => new Date()),
+    nextReviewAt: timestamp("next_review_at").defaultNow(),
+    interval: integer("interval").default(1), // in days
   },
   (table) => [
     index("cards_deck_id_idx").on(table.deckId),
@@ -89,3 +91,23 @@ export const cardsTable = pgTable(
 
 export type InsertCard = typeof cardsTable.$inferInsert;
 export type SelectCard = typeof cardsTable.$inferSelect;
+
+// CARD REVIEWS
+export const cardReviewsTable = pgTable(
+  "card_reviews",
+  {
+    id: serial("id").primaryKey(),
+    cardId: integer("card_id")
+      .notNull()
+      .references(() => cardsTable.id, { onDelete: "cascade" }),
+    userId: text("user_id")
+      .notNull()
+      .references(() => usersTable.id, { onDelete: "cascade" }),
+    rating: varchar("rating", { length: 20 }).notNull(), // "easy", "okay", "hard"
+    reviewedAt: timestamp("reviewed_at").defaultNow().notNull(),
+  },
+  (table) => [index("card_reviews_user_id_idx").on(table.userId)]
+).enableRLS();
+
+export type InsertCardReview = typeof cardReviewsTable.$inferInsert;
+export type SelectCardReview = typeof cardReviewsTable.$inferSelect;

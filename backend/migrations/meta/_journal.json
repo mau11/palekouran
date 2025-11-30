@@ -50,6 +50,27 @@
       "when": 1763613913788,
       "tag": "0006_add_cards_table",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1764518307659,
+      "tag": "0007_add_card_reviews_table",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1764518318101,
+      "tag": "0008_add_review_interval_to_cards",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1764518445700,
+      "tag": "0009_enable_rls_on_card_reviews",
+      "breakpoints": true
     }
   ]
 }
