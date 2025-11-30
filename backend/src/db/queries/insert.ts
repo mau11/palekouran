@@ -8,6 +8,8 @@ import {
   decksTable,
   InsertCard,
   cardsTable,
+  InsertCardReview,
+  cardReviewsTable,
 } from "@db/schema";
 
 export async function createUser(data: InsertUser) {
@@ -20,4 +22,8 @@ export async function createDeck(data: InsertDeck) {
 
 export async function createCard(data: InsertCard) {
   return await db.insert(cardsTable).values(data).returning();
+}
+
+export async function createReview(data: InsertCardReview) {
+  return await db.insert(cardReviewsTable).values(data).returning();
 }
