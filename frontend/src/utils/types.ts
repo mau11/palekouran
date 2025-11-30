@@ -50,6 +50,7 @@ export type Card = {
   interval?: number;
 };
 export type CardNoUserId = Omit<Card, "userId">;
+export type CardNoReview = Omit<CardNoUserId, "nextReviewAt">;
 
 export type CardReview = {
   id?: number;

@@ -1,5 +1,5 @@
 import { API_URL } from "@utils/api";
-import type { CardNoUserId, DeckNoIds } from "@utils/types";
+import type { CardNoReview, DeckNoIds } from "@utils/types";
 
 type FetchAPIOptions = RequestInit & { token?: string };
 
@@ -55,7 +55,7 @@ export const editDeck = (token: string, data: DeckNoIds, deckId: string) => {
 // edit card
 export const editCard = (
   token: string,
-  data: CardNoUserId,
+  data: CardNoReview,
   deckId: string,
   cardId: string
 ) => {
@@ -80,7 +80,7 @@ export const getCard = (deckId: string, cardId: string, token: string) => {
 };
 
 // create card
-export const createCard = (id: string, token: string, data: CardNoUserId) => {
+export const createCard = (id: string, token: string, data: CardNoReview) => {
   return fetchAPI(`/api/decks/${id}/new`, {
     method: "POST",
     token,
