@@ -65,10 +65,7 @@ const Account = () => {
           setDecks(decks);
 
           const reviews = await getReviews(accessToken);
-          if (reviews) {
-            setReviewCount(reviews);
-          }
-          console.log(reviews);
+          setReviewCount(reviews.data.length);
         } catch (err) {
           console.error("Error retrieving data");
         } finally {

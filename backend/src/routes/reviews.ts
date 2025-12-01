@@ -15,9 +15,8 @@ const reviews = new Hono();
 reviews.get("/", requireAuth, async (c) => {
   const userId = c.get("userId");
   try {
-    const [reviews]: SelectCardReview[] = await getReviews(userId);
+    const reviews: SelectCardReview[] = await getReviews(userId);
 
-    console.log(reviews);
     if (!reviews) {
       return c.json({ error: "Reviews not found" }, 404);
     }

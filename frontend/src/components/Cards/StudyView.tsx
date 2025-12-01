@@ -28,7 +28,7 @@ import {
   Subtext,
 } from "./Card.styled";
 
-type CardInfo = CardNoUserId & { signedUrl?: string };
+type CardInfo = CardNoUserId & { signedUrl?: string; id: string };
 
 const StudyView = () => {
   const auth = useContext(AuthContext);
@@ -44,7 +44,7 @@ const StudyView = () => {
 
   const [showBack, setShowBack] = useState(false);
   const [token, setToken] = useState("");
-  const [review, setReview] = useState("");
+  const [reviews, setReviews] = useState<Record<number, string>>({});
 
   useEffect(() => {
     const fetchDeck = async () => {
@@ -121,13 +121,13 @@ const StudyView = () => {
     rating: CardReviewNoUserId["rating"]
   ) => {
     e.stopPropagation();
-    setReview(rating);
-    if (card.id) {
-      await addReview(token, {
-        rating,
-        cardId: card.id,
-      });
-    }
+
+    const cardId = card.id;
+    setReviews((prev) => ({ ...prev, [cardId]: rating }));
+    await addReview(token, {
+      rating,
+      cardId: cardId,
+    });
   };
 
   return (
@@ -159,7 +159,9 @@ const StudyView = () => {
                 $color="error"
                 title="Hard"
                 onClick={(e) => handleRating(e, "hard")}
-                $disabled={(review && review !== "hard") || false}
+                $disabled={
+                  reviews[card.id] ? reviews[card.id] !== "hard" : false
+                }
               >
                 <i className="fa-regular fa-face-frown"></i>
               </IconLinkWrapper>
@@ -167,7 +169,9 @@ const StudyView = () => {
                 $color="info"
                 title="Okay"
                 onClick={(e) => handleRating(e, "okay")}
-                $disabled={(review && review !== "okay") || false}
+                $disabled={
+                  reviews[card.id] ? reviews[card.id] !== "okay" : false
+                }
               >
                 <i className="fa-regular fa-face-meh"></i>
               </IconLinkWrapper>
@@ -175,7 +179,9 @@ const StudyView = () => {
                 $color="success"
                 title="Easy!"
                 onClick={(e) => handleRating(e, "easy")}
-                $disabled={(review && review !== "easy") || false}
+                $disabled={
+                  reviews[card.id] ? reviews[card.id] !== "easy" : false
+                }
               >
                 <i className="fa-regular fa-face-smile"></i>
               </IconLinkWrapper>
