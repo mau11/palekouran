@@ -2,7 +2,7 @@ import breakpoints from "@utils/breakpoints";
 import styled from "styled-components";
 
 export const CardContainer = styled.section`
-  border: 1px solid var(--black);
+  border: 1px solid var(--grey-extra-light);
   border-radius: 8px;
   padding: 2em 2em 1.5em;
   margin-top: 2em;
@@ -13,6 +13,7 @@ export const CardContainer = styled.section`
   text-align: center;
   cursor: pointer;
   background-color: var(--white);
+  box-shadow: var(--shadow-card);
 `;
 
 export const NavWrapper = styled.section`

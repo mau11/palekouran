@@ -83,7 +83,9 @@ const Nav = () => {
               {/* desktop account dropdown */}
               {showMenu && !burgerOpen && (
                 <ContextMenu>
-                  <NavLink to="/account">Account</NavLink>
+                  <NavLink to="/account" onClick={() => setShowMenu(false)}>
+                    Account
+                  </NavLink>
                   <NavSpan onClick={handleSignOut}>Log out</NavSpan>
                 </ContextMenu>
               )}

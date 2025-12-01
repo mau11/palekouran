@@ -211,7 +211,7 @@ export const Grid = styled.section`
 // CARDS + DECKS
 //
 export const Card = styled.div`
-  background-image: var(--gradient-mixed-op);
+  background-color: var(--secondaryOp10);
   border-radius: 14px;
   padding: 1.75em;
   border: 1px solid var(--grey-extra-light);
