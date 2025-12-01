@@ -1,7 +1,7 @@
 // https://orm.drizzle.team/docs/tutorials/drizzle-with-supabase#query-examples
 
 import { db } from "@db/client";
-import { cardsTable, decksTable } from "@db/schema";
+import { cardsTable, decksTable, ttsAudioTable } from "@db/schema";
 import { eq, and } from "drizzle-orm";
 
 // TODO - refactor routes/auth.ts to use drizzle to get user data from db
@@ -46,4 +46,15 @@ export async function getCard(userId: string, deckId: string, cardId: string) {
         eq(cardsTable.userId, userId)
       )
     );
+}
+
+// get tts audio
+export async function getTts(text: string, language: string) {
+  return await db
+    .select()
+    .from(ttsAudioTable)
+    .where(
+      and(eq(ttsAudioTable.text, text), eq(ttsAudioTable.language, language))
+    )
+    .limit(1);
 }
