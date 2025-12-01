@@ -58,3 +58,12 @@ export async function getTts(text: string, language: string) {
     )
     .limit(1);
 }
+
+// get tts audio by id
+export async function getTtsById(id: string) {
+  return await db
+    .select()
+    .from(ttsAudioTable)
+    .where(eq(ttsAudioTable.id, Number(id)))
+    .limit(1);
+}

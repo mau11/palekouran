@@ -130,5 +130,5 @@ export const ttsAudioTable = pgTable(
   ]
 ).enableRLS();
 
-export type InsertTtsAudioTable = typeof ttsAudioTable.$inferInsert;
-export type SelectTtsAudioTable = typeof ttsAudioTable.$inferSelect;
+export type InsertTtsAudio = typeof ttsAudioTable.$inferInsert;
+export type SelectTtsAudio = typeof ttsAudioTable.$inferSelect;

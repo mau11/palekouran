@@ -7,10 +7,9 @@ import { Variables } from "../types";
 import { requireAuth } from "../middleware/requireAuth";
 import { eq } from "drizzle-orm";
 import { db } from "@db/client";
-import { cardsTable, ttsAudioTable } from "@db/schema";
-import { getTts } from "@db/queries/select";
+import { cardsTable, SelectTtsAudio, ttsAudioTable } from "@db/schema";
+import { getTts, getTtsById } from "@db/queries/select";
 import { generateAudio, VOICE_ID } from "@lib/elevenLabs";
-import { buffer } from "stream/consumers";
 
 const tts = new Hono<{ Variables: Variables }>();
 
@@ -81,8 +80,7 @@ tts.post("/", requireAuth, async (c) => {
       })
       .returning();
 
-    // if existing card, update card tts column
-    // otherwise, add on create
+    // if existing card, update card tts column, otherwise, add on create
     if (cardId && cardId !== "new") {
       await db
         .update(cardsTable)
@@ -105,6 +103,39 @@ tts.post("/", requireAuth, async (c) => {
     );
   } catch (err) {
     console.error("Error uploading tts audio", err);
+    return c.json({ error: "Server error" }, 500);
+  }
+});
+
+tts.get("/:audioId", requireAuth, async (c) => {
+  try {
+    const audioId = c.req.param("audioId");
+
+    const rows: SelectTtsAudio[] = await getTtsById(audioId);
+
+    const audio = rows[0];
+
+    if (!audio) {
+      return c.json({ error: "Audio not found" }, 404);
+    }
+
+    let signedUrl = "";
+    if (audio.audioUrl) {
+      const { data } = await supabaseAdmin.storage
+        .from(AUDIO_BUCKET)
+        .createSignedUrl(audio.audioUrl, 60 * 60 * 24 * 7); // expires in 7 days, but fetches new url each api call
+      signedUrl = data.signedUrl;
+    }
+
+    return c.json(
+      {
+        message: "TTS audio retrieved successfully",
+        data: { audio, signedUrl },
+      },
+      200
+    );
+  } catch (err) {
+    console.error("Error retrieving tts audio", err);
     return c.json({ error: "Server error" }, 500);
   }
 });

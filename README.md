@@ -68,6 +68,7 @@
 - **Supabase** - Postgres database, authentication, and storage
 - **Drizzle ORM** - Type-safe database queries
 - **Railway** - Hosting platform
+- **ElevenLabs** - AI Text to Speech
 
 <div>
   <a href="https://nodejs.org/en/" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/danielcranney/readme-generator/main/public/icons/skills/nodejs-colored.svg" alt="NodeJS" title="NodeJS" width="36" height="36"/></a>
@@ -75,6 +76,7 @@
   <a href="https://supabase.io/" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/danielcranney/readme-generator/main/public/icons/skills/supabase-colored.svg" alt="Supabase" title="Supabase" width="36" height="36"/></a>
   <a href="https://orm.drizzle.team/" target="_blank" rel="noreferrer"><img src="https://avatars.githubusercontent.com/u/108468352?s=48&v=4" alt="Drizzle ORM" title="Drizzle ORM" width="36" height="36"/></a>
   <a href="https://railway.com/" target="_blank" rel="noreferrer"><img src="https://avatars.githubusercontent.com/u/66716858?s=200&v=4" alt="Railway" title="Railway" width="36" height="36"/></a>
+  <a href="https://elevenlabs.io/" target="_blank" rel="noreferrer"><img src="https://avatars.githubusercontent.com/u/94471909?s=48&v=4" alt="ElevenLabs" title="ElevenLabs" width="36" height="36"/></a>
 </div>
 
 ## Requirements
@@ -127,6 +129,7 @@ Then add your values to each `.env` file.
 | SUPABASE_PUBLISHABLE_KEY | Supabase public API key ([find here](https://supabase.com/dashboard/project/*/settings/api-keys)) |
 | SUPABASE_SECRET_KEY | Supabase secret API key ([find here](https://supabase.com/dashboard/project/*/settings/api-keys)) |
 | FRONTEND_URL | Frontend URL (default: http://localhost:5173) |
+| ELEVENLABS_API_KEY | ElevenLabs API keys ([find here](https://elevenlabs.io/app/developers/api-keys)) |
 
 ### Installing Dependencies
 

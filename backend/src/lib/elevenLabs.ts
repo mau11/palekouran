@@ -18,7 +18,7 @@ export const generateAudio = async (text: string, languageCode: string) => {
   const audioStream = await elevenlabs.textToSpeech.convert(VOICE_ID, {
     outputFormat: "mp3_44100_128",
     text,
-    modelId: "eleven_multilingual_v2", // or "eleven_multilingual_v2"
+    modelId: "eleven_turbo_v2_5", // or "eleven_multilingual_v2"
     languageCode,
   });
 
