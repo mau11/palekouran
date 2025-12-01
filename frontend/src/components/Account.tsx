@@ -20,6 +20,7 @@ import {
 import type { Deck } from "@utils/types";
 import { getDecks } from "@lib/decks";
 import Loader from "./Loader";
+import { getReviews } from "@lib/reviews";
 
 const Account = () => {
   const auth = useContext(AuthContext);
@@ -44,22 +45,35 @@ const Account = () => {
   const [decks, setDecks] = useState<Deck[]>([]);
   const [loading, setLoading] = useState(true);
   const [totalCards, setTotalCards] = useState(0);
+  const [reviewCount, setReviewCount] = useState(0);
 
   useEffect(() => {
     const fetchDecks = async () => {
       const accessToken = auth?.session?.access_token;
 
-      if (accessToken) {
-        let count = 0;
-        const response = await getDecks(accessToken);
-        const decks: Deck[] = response.decks;
-
-        count = decks.reduce((acc, val) => acc + val.totalCards, 0);
-        setTotalCards(count);
-        setDecks(decks);
-        setLoading(false);
-      } else {
+      if (!accessToken) {
         navigate("/login");
+      } else {
+        let count = 0;
+        try {
+          const response = await getDecks(accessToken);
+          const decks: Deck[] = response.decks;
+
+          count = decks.reduce((acc, val) => acc + val.totalCards, 0);
+          setTotalCards(count);
+
+          setDecks(decks);
+
+          const reviews = await getReviews(accessToken);
+          if (reviews) {
+            setReviewCount(reviews);
+          }
+          console.log(reviews);
+        } catch (err) {
+          console.error("Error retrieving data");
+        } finally {
+          setLoading(false);
+        }
       }
     };
     fetchDecks();
@@ -89,10 +103,8 @@ const Account = () => {
             <StatLabel>Total Cards</StatLabel>
           </StatCard>
 
-          {/* TODO get review count after spaced repetition implementation */}
           <StatCard>
-            {/* <StatValue>{reviewsCompleted || 0}</StatValue> */}
-            <StatValue>0</StatValue>
+            <StatValue>{reviewCount}</StatValue>
             <StatLabel>Reviews Done</StatLabel>
           </StatCard>
         </StatsGrid>

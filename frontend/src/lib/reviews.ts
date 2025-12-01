@@ -34,3 +34,8 @@ export const addReview = (
     body: JSON.stringify(data),
   });
 };
+
+// get total reviews by user
+export const getReviews = (token: string) => {
+  return fetchAPI(`/api/reviews`, { token });
+};

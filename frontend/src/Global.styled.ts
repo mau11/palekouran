@@ -202,7 +202,7 @@ export const Grid = styled.section`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 1.5em;
-  margin: 0;
+  margin: 0 0 1px;
 
   @media ${breakpoints.mobile.large} {
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
