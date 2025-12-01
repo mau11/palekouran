@@ -4,7 +4,6 @@ import AuthContext from "@contexts/AuthContext";
 import { usePathSegment } from "@customHooks/usePathSegment";
 import Loader from "@components/Loader";
 import { deleteCard, deleteDeckOfCards, getDeckOfCards } from "@lib/decks";
-import { LANGUAGES } from "@utils/constants";
 import type { CardNoUserId, DeckNoUserId } from "@utils/types";
 import DeckForm from "./DeckForm";
 import {
@@ -32,6 +31,7 @@ import {
   FilterLabel,
   ToggleButton,
 } from "./Deck.styled";
+import { getLangName } from "@utils/constants";
 
 const DeckPage = () => {
   const auth = useContext(AuthContext);
@@ -97,12 +97,6 @@ const DeckPage = () => {
   const handleCategoryChange = (category: string) => {
     setFilter(category);
     category ? setParams({ category }) : setParams({});
-  };
-
-  const getLangName = (code: string | undefined) => {
-    if (!code) return "";
-    const language = LANGUAGES.find((lang) => lang.code === code);
-    return language ? language.name : code;
   };
 
   const handleEdit = async () => {

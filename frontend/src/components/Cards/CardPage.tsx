@@ -19,7 +19,9 @@ import {
   DetailRow,
   DetailValue,
   FullSpan,
+  PlayerWrapper,
 } from "./Card.styled";
+import { getSignedTTS } from "@lib/tts";
 
 const CardPage = () => {
   const auth = useContext(AuthContext);
@@ -32,6 +34,7 @@ const CardPage = () => {
   const [loading, setLoading] = useState(true);
   const [token, setToken] = useState("");
   const [audioUrl, setAudioUrl] = useState("");
+  const [ttsAudioUrl, setTtsAudioUrl] = useState("");
 
   useEffect(() => {
     const fetchCard = async () => {
@@ -41,13 +44,18 @@ const CardPage = () => {
         navigate("/login");
         return;
       }
+      setToken(accessToken);
 
       try {
         const response = await getCard(deckId, cardId, accessToken);
+
         const { card, signedUrl } = response.data;
         setCard(card);
         setAudioUrl(signedUrl);
-        setToken(accessToken);
+        if (card.ttsAudioId) {
+          const { data } = await getSignedTTS(card.ttsAudioId, accessToken);
+          setTtsAudioUrl(data.signedUrl);
+        }
       } catch (err) {
         console.error("Failed to load card:", err);
         navigate(`/decks/${deckId}`);
@@ -87,15 +95,26 @@ const CardPage = () => {
       </Header>
 
       <CardDetailSection>
-        <DetailRow>
-          <DetailLabel>Category</DetailLabel>
-          <DetailValue>{card?.category}</DetailValue>
-        </DetailRow>
+        {card?.category && (
+          <DetailRow>
+            <DetailLabel>Category</DetailLabel>
+            <DetailValue>{card?.category}</DetailValue>
+          </DetailRow>
+        )}
 
         <DetailRow>
           <DetailLabel>Word/Phrase</DetailLabel>
           <DetailValue>{card?.word}</DetailValue>
         </DetailRow>
+
+        {ttsAudioUrl && (
+          <DetailRow>
+            <DetailLabel>AI Generated Pronunciation</DetailLabel>
+            <PlayerWrapper>
+              <audio controls src={ttsAudioUrl} />
+            </PlayerWrapper>
+          </DetailRow>
+        )}
 
         <DetailRow>
           <DetailLabel>Translation</DetailLabel>
@@ -119,7 +138,9 @@ const CardPage = () => {
         {audioUrl && (
           <DetailRow>
             <DetailLabel>Audio</DetailLabel>
-            <audio controls src={audioUrl} />
+            <PlayerWrapper>
+              <audio controls src={audioUrl} />
+            </PlayerWrapper>
           </DetailRow>
         )}
       </CardDetailSection>

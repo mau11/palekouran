@@ -169,7 +169,10 @@ export const Button = styled.button`
   }
 `;
 
-export const SmallButton = styled(Button)<{ $color?: string }>`
+export const SmallButton = styled(Button)<{
+  $color?: string;
+  $disabled?: boolean;
+}>`
   padding: 0.4em 0.9em;
   font-size: 0.85rem;
 

@@ -16,8 +16,11 @@ import AuthContext from "@contexts/AuthContext";
 import { usePathSegment } from "@customHooks/usePathSegment";
 import AudioRecorder from "@components/Cards/AudioRecorder";
 import Loader from "@components/Loader";
-import { createCard, editCard, getCard } from "@lib/decks";
+import { createCard, editCard, getCard, getDeckOfCards } from "@lib/decks";
 import { uploadAudio } from "@lib/uploads";
+import { createTTS, getSignedTTS } from "@lib/tts";
+import type { DeckNoUserId } from "@utils/types";
+import { getLangName } from "@utils/constants";
 
 type CardFormProps = {
   cardId?: string;
@@ -34,6 +37,7 @@ const CardForm = ({ cardId }: CardFormProps) => {
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(cardId ? true : false);
+  const [miniLoader, setMiniLoader] = useState(false);
   const [error, setError] = useState("");
   const [category, setCategory] = useState("");
   const [word, setWord] = useState("");
@@ -43,17 +47,27 @@ const CardForm = ({ cardId }: CardFormProps) => {
   const [playbackUrl, setPlaybackUrl] = useState(""); // signed URL for <audio />
   const [storedAudioPath, setStoredAudioPath] = useState(""); // db path for audio
   const [recordedBlob, setRecordedBlob] = useState<Blob | null>(null);
+  const [token, setToken] = useState("");
+  const [ttsUrl, setTtsUrl] = useState("");
+  const [ttsAudioId, setTtsAudioId] = useState<number | null>(null);
+  const [deck, setDeck] = useState<DeckNoUserId | null>(null);
+  const [disabled, setDisabled] = useState(true);
 
   useEffect(() => {
-    if (cardId) {
-      const fetchDeck = async () => {
-        const accessToken = auth?.session?.access_token;
+    const accessToken = auth?.session?.access_token;
 
-        if (!accessToken) {
-          navigate("/login");
-          return;
-        }
+    if (!accessToken) {
+      navigate("/login");
+      return;
+    }
 
+    setToken(accessToken);
+
+    const fetchData = async () => {
+      const deckResponse = await getDeckOfCards(deckId, accessToken);
+      setDeck(deckResponse.data.info);
+
+      if (cardId) {
         try {
           const response = await getCard(deckId, cardId, accessToken);
           const { card, signedUrl } = response.data;
@@ -64,15 +78,30 @@ const CardForm = ({ cardId }: CardFormProps) => {
           setStoredAudioPath(card.audioUrl);
           setDefinition(card.definition);
           setPlaybackUrl(signedUrl);
+
+          if (card.ttsAudioId) {
+            setTtsAudioId(card.ttsAudioId);
+            const { data } = await getSignedTTS(card.ttsAudioId, accessToken);
+            setTtsUrl(data.signedUrl);
+          }
+
           setLoading(false);
         } catch (err) {
           console.error("Failed to load card:", err);
           navigate(`/decks/${cardId}`);
         }
-      };
-      fetchDeck();
-    }
+      }
+    };
+    fetchData();
   }, [deckId, auth?.session]);
+
+  useEffect(() => {
+    if (word.length) {
+      setDisabled(false);
+    } else {
+      setDisabled(true);
+    }
+  }, [word.trim().length]);
 
   const processAudio = async (token: string) => {
     if (recordedBlob) {
@@ -83,6 +112,33 @@ const CardForm = ({ cardId }: CardFormProps) => {
       return data;
     } else {
       return "";
+    }
+  };
+
+  const handleGenerateTTS = async () => {
+    if (!disabled) {
+      setMiniLoader(true);
+
+      try {
+        const language = deck?.targetLanguage;
+
+        if (language) {
+          const data = {
+            text: word,
+            language,
+            cardId: cardId || "new",
+          };
+
+          const response = await createTTS(data, token);
+          const { audioUrl, ttsAudioId: newTtsId } = response;
+          setTtsUrl(audioUrl);
+          setTtsAudioId(newTtsId);
+        }
+      } catch (err) {
+        setError("Failed to generate audio");
+      } finally {
+        setMiniLoader(false);
+      }
     }
   };
 
@@ -115,6 +171,7 @@ const CardForm = ({ cardId }: CardFormProps) => {
           definition,
           notes,
           audioUrl: finalAudioUrl,
+          ttsAudioId,
           category,
         };
 
@@ -157,7 +214,24 @@ const CardForm = ({ cardId }: CardFormProps) => {
             onChange={(e) => setWord(e.target.value)}
             required
           />
-          <Label htmlFor="translation">Translation*</Label>
+          <PlayerWrapper>
+            <SmallButton
+              disabled={disabled || !!ttsUrl}
+              type="button"
+              onClick={handleGenerateTTS}
+            >
+              {miniLoader ? (
+                <i className="fa-solid fa-spinner fa-spin-pulse"></i>
+              ) : (
+                <i className="fa-solid fa-volume-high"></i>
+              )}{" "}
+              AI Pronunciation
+            </SmallButton>
+            {ttsUrl && <audio src={ttsUrl} controls />}
+          </PlayerWrapper>
+          <Label htmlFor="translation">
+            {deck && getLangName(deck.sourceLanguage)} Translation*
+          </Label>
           <input
             type="text"
             name="translation"

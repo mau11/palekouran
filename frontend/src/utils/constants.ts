@@ -15,3 +15,9 @@ export const LANGUAGES = [
   { code: "es", name: "Spanish" },
   { code: "vi", name: "Vietnamese" },
 ];
+
+export const getLangName = (code: string | undefined) => {
+  if (!code) return "";
+  const language = LANGUAGES.find((lang) => lang.code === code);
+  return language ? language.name : code;
+};
