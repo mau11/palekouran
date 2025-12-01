@@ -27,14 +27,21 @@ export const Subtext = styled.p`
   color: var(--grey);
 `;
 
+export const SmallSubtext = styled(Subtext)`
+  font-size: 0.7rem;
+  margin-top: 1em;
+  font-style: italic;
+`;
+
 export const AudioWrapper = styled.audio`
-  margin: auto;
+  margin: 0.5em auto;
 `;
 
 export const PlayerWrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 0.75em;
+  margin: auto;
 
   audio {
     height: 2.5em;

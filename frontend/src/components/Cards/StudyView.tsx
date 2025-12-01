@@ -24,11 +24,18 @@ import {
   AudioWrapper,
   CardContainer,
   NavWrapper,
+  PlayerWrapper,
   RatingSection,
+  SmallSubtext,
   Subtext,
 } from "./Card.styled";
+import { getSignedTTS } from "@lib/tts";
 
-type CardInfo = CardNoUserId & { signedUrl?: string; id: string };
+type CardInfo = CardNoUserId & {
+  signedUrl?: string;
+  id: string;
+  ttsAudioId?: string;
+};
 
 const StudyView = () => {
   const auth = useContext(AuthContext);
@@ -45,6 +52,7 @@ const StudyView = () => {
   const [showBack, setShowBack] = useState(false);
   const [token, setToken] = useState("");
   const [reviews, setReviews] = useState<Record<number, string>>({});
+  const [ttsAudioUrl, setTtsAudioUrl] = useState("");
 
   useEffect(() => {
     const fetchDeck = async () => {
@@ -64,7 +72,14 @@ const StudyView = () => {
         const spaceReppedCards = cards.filter(
           (item: CardInfo) => now >= new Date(item.nextReviewAt)
         );
+        spaceReppedCards.map(async (card: CardInfo) => {
+          if (card.ttsAudioId) {
+            const { data } = await getSignedTTS(card.ttsAudioId, accessToken);
+            setTtsAudioUrl(data.signedUrl);
+          }
+        });
         setCards(spaceReppedCards);
+
         setToken(accessToken);
       } catch (err) {
         console.error("Failed to load deck:", err);
@@ -146,7 +161,19 @@ const StudyView = () => {
         {!showBack ? (
           <>
             <h2>{card.word}</h2>
-            {card.signedUrl && <AudioWrapper src={card.signedUrl} controls />}
+            {card.signedUrl && (
+              <PlayerWrapper>
+                <AudioWrapper src={card.signedUrl} controls />
+              </PlayerWrapper>
+            )}
+            {ttsAudioUrl && (
+              <>
+                <SmallSubtext>AI Generated Pronunciation:</SmallSubtext>
+                <PlayerWrapper>
+                  <AudioWrapper src={ttsAudioUrl} controls />
+                </PlayerWrapper>
+              </>
+            )}
             <Subtext>(Tap to flip)</Subtext>
           </>
         ) : (
