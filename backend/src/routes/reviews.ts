@@ -7,8 +7,33 @@ import { createReview } from "@db/queries/insert";
 import { cardsTable, SelectCardReview } from "@db/schema";
 import { omitUserId } from "../index";
 import { requireAuth } from "../middleware/requireAuth";
+import { getReviews } from "@db/queries/select";
 
 const reviews = new Hono();
+
+// get reviews
+reviews.get("/", requireAuth, async (c) => {
+  const userId = c.get("userId");
+  try {
+    const [reviews]: SelectCardReview[] = await getReviews(userId);
+
+    console.log(reviews);
+    if (!reviews) {
+      return c.json({ error: "Reviews not found" }, 404);
+    }
+
+    return c.json(
+      {
+        message: "Deck retrieved successfully",
+        data: reviews,
+      },
+      200
+    );
+  } catch (err) {
+    console.error("Error retrieving reviews", err);
+    return c.json({ error: "Server error" }, 500);
+  }
+});
 
 // add review
 reviews.post("/", requireAuth, async (c) => {
