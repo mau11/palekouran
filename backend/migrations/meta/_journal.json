@@ -71,6 +71,20 @@
       "when": 1764518445700,
       "tag": "0009_enable_rls_on_card_reviews",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1764577673203,
+      "tag": "0010_add_tts_table",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1764577828505,
+      "tag": "0011_add_ttsaudio_to_cards",
+      "breakpoints": true
     }
   ]
 }

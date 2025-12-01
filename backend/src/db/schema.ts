@@ -73,6 +73,7 @@ export const cardsTable = pgTable(
     definition: text("definition"),
     notes: text("notes"), // user notes or examples for context
     audioUrl: text("audio_url"), // url to user's audio recording
+    ttsAudioId: integer("tts_audio_id").references(() => ttsAudioTable.id),
     category: varchar("category", { length: 50 }), // food, travel, shopping etc
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
@@ -86,6 +87,7 @@ export const cardsTable = pgTable(
     index("cards_deck_id_idx").on(table.deckId),
     index("cards_user_id_idx").on(table.userId),
     index("cards_category_idx").on(table.category),
+    index("cards_tts_audio_idx").on(table.ttsAudioId),
   ]
 ).enableRLS();
 
@@ -111,3 +113,22 @@ export const cardReviewsTable = pgTable(
 
 export type InsertCardReview = typeof cardReviewsTable.$inferInsert;
 export type SelectCardReview = typeof cardReviewsTable.$inferSelect;
+
+// TTS AUDIO
+export const ttsAudioTable = pgTable(
+  "tts_audio",
+  {
+    id: serial("id").primaryKey(),
+    text: text("text").notNull(),
+    language: text("language").notNull(),
+    audioUrl: text("audio_url").notNull(), // url to tts's audio recording
+    voiceId: text("voice_id"), // ElevenLabs voice id used
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [
+    index("tts_text_language_idx").on(table.text, table.language), // find existing audio by text + language
+  ]
+).enableRLS();
+
+export type InsertTtsAudioTable = typeof ttsAudioTable.$inferInsert;
+export type SelectTtsAudioTable = typeof ttsAudioTable.$inferSelect;
