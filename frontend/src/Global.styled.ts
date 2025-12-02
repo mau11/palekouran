@@ -325,3 +325,7 @@ export const IconLinkWrapper = styled.span<{
 export const Italic = styled.p`
   font-style: italic;
 `;
+
+export const Spacer = styled.div`
+  margin: 1em 0;
+`;
