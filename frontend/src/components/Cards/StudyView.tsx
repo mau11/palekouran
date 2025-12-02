@@ -22,7 +22,9 @@ import {
 } from "@globalStyles";
 import {
   AudioWrapper,
+  CardBack,
   CardContainer,
+  CardFace,
   NavWrapper,
   PlayerWrapper,
   RatingSection,
@@ -157,9 +159,9 @@ const StudyView = () => {
         </Button>
       </Header>
 
-      <CardContainer onClick={flip}>
+      <CardContainer onClick={flip} $flipped={showBack}>
         {!showBack ? (
-          <>
+          <CardFace>
             <h2>{card.word}</h2>
             {card.signedUrl && (
               <PlayerWrapper>
@@ -175,9 +177,12 @@ const StudyView = () => {
               </>
             )}
             <Subtext>(Tap to flip)</Subtext>
-          </>
+            <IconLinkWrapper $fixed={true}>
+              <i className="fa-solid fa-repeat"></i>
+            </IconLinkWrapper>
+          </CardFace>
         ) : (
-          <>
+          <CardBack>
             <h2>{card.translation}</h2>
             {card.definition && <p>{card.definition}</p>}
             {card.notes && <Italic>{card.notes}</Italic>}
@@ -213,7 +218,10 @@ const StudyView = () => {
                 <i className="fa-regular fa-face-smile"></i>
               </IconLinkWrapper>
             </RatingSection>
-          </>
+            <IconLinkWrapper $fixed={true}>
+              <i className="fa-solid fa-repeat"></i>
+            </IconLinkWrapper>
+          </CardBack>
         )}
       </CardContainer>
 

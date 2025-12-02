@@ -283,6 +283,7 @@ export const EmptyText = styled.p`
 export const IconLinkWrapper = styled.span<{
   $color?: string;
   $disabled?: boolean;
+  $fixed?: boolean;
 }>`
   cursor: pointer;
   display: inline-flex;
@@ -318,6 +319,20 @@ export const IconLinkWrapper = styled.span<{
 
       i {
         color: var(--grey-light);
+      }
+    `}
+
+  ${({ $fixed }) =>
+    $fixed &&
+    css`
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      top: 0;
+
+      i {
+        color: var(--grey-light);
+        font-size: 2em;
       }
     `}
 `;

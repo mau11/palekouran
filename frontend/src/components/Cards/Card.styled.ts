@@ -1,12 +1,13 @@
 import breakpoints from "@utils/breakpoints";
 import styled from "styled-components";
 
-export const CardContainer = styled.section`
+export const CardContainer = styled.section<{ $flipped: boolean }>`
   border: 1px solid var(--grey-extra-light);
   border-radius: 8px;
-  padding: 2em 2em 1.5em;
-  margin-top: 2em;
-  min-height: 200px;
+  padding: 1em;
+  min-height: 250px;
+  max-width: 700px;
+  margin: 3em auto 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -14,6 +15,26 @@ export const CardContainer = styled.section`
   cursor: pointer;
   background-color: var(--white);
   box-shadow: var(--shadow-card);
+
+  // study view card flip animation:
+  perspective: 2000px;
+  transition: transform 1s;
+  transform-style: preserve-3d;
+  transform: rotateY(${(props) => (props.$flipped ? "180deg" : "0deg")});
+`;
+
+export const CardFace = styled.div`
+  backface-visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5em;
+  position: relative;
+`;
+
+export const CardBack = styled(CardFace)`
+  transform: rotateY(180deg);
 `;
 
 export const NavWrapper = styled.section`
@@ -21,6 +42,8 @@ export const NavWrapper = styled.section`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  max-width: 800px;
+  margin: 2em auto 0;
 `;
 
 export const Subtext = styled.p`
