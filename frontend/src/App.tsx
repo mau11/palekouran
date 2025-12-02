@@ -15,6 +15,7 @@ import CardPage from "@components/Cards/CardPage";
 import About from "@components/About";
 import Loader from "@components/Loader";
 import StudyView from "@components/Cards/StudyView";
+import NotFound from "@components/NotFound";
 
 function App() {
   const auth = useAuth();
@@ -42,6 +43,7 @@ function App() {
               <Route path=":cardId" element={<CardPage />} />
             </Route>
           </Route>
+          <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
     </AuthContext>
