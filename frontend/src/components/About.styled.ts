@@ -48,7 +48,3 @@ export const FeatureList = styled.ul`
     align-items: center;
   }
 `;
-
-export const Bold = styled.span`
-  font-weight: 650;
-`;

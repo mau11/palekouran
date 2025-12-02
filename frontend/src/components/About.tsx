@@ -1,5 +1,5 @@
-import { Header, HeaderOne, Spacer, Wrapper } from "@globalStyles";
-import { AboutContent, Bold, FeatureList, InfoCard } from "./About.styled";
+import { Bold, Header, HeaderOne, Spacer, Wrapper } from "@globalStyles";
+import { AboutContent, FeatureList, InfoCard } from "./About.styled";
 
 const About = () => {
   return (
@@ -90,9 +90,10 @@ const About = () => {
 
         <Spacer />
         <p>
-          If you have any feedback or ideas, I'd love to hear them. If you're a
-          developer, feel free to take a lot at the source code and report any
-          issues on{" "}
+          If you have any feedback or ideas, I'd love to hear them. This is a
+          work in progress, and I'm constantly looking for ways to make it more
+          useful. If you're a developer, feel free to take a look at the source
+          code and report any issues on{" "}
           <a
             href="https://github.com/mau11/palekouran"
             target="_blank"
@@ -102,8 +103,7 @@ const About = () => {
           >
             GitHub
           </a>
-          . This is a work in progress, and I'm constantly looking for ways to
-          make it more useful.
+          .
         </p>
       </AboutContent>
     </Wrapper>

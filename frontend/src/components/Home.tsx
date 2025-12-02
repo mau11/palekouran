@@ -1,30 +1,89 @@
-import { Wrapper } from "@globalStyles";
+import { useContext } from "react";
+import { useNavigate } from "react-router";
+import AuthContext from "@contexts/AuthContext";
+import { Button, Grid, Wrapper } from "@globalStyles";
+import {
+  ButtonGroup,
+  FeatureCard,
+  FeatureIcon,
+  FeatureText,
+  FeatureTitle,
+  Hero,
+  HeroText,
+  HeroTitle,
+  SecondaryButton,
+} from "./Home.styled";
 
 const Home = () => {
+  const auth = useContext(AuthContext);
+  const navigate = useNavigate();
+  const isLoggedIn = !!auth?.user;
+
   return (
     <Wrapper>
-      <h1>Practice vocabulary with flashcards that ...</h1>
-      <p>
-        Record your pronunciation, get AI-powered support, and track your
-        progress as you learn new words at your own pace.
-      </p>
-      {/* buttons: Get Started + View Decks */}
+      <Hero>
+        <HeroTitle>
+          Practice vocabulary with flashcards that talk back
+        </HeroTitle>
+        <HeroText>
+          Palekouran is a modern language learning tool that combines
+          traditional flashcards with interactive audio features. Record your
+          pronunciation, get AI-powered translations, and track your progress,
+          all in one place.
+        </HeroText>
+        {isLoggedIn ? (
+          <ButtonGroup>
+            <Button onClick={() => navigate("/decks")}>
+              <i className="fa-solid fa-layer-group"></i> My Decks
+            </Button>
+            <SecondaryButton onClick={() => navigate("/decks/new")}>
+              <i className="fa-solid fa-plus"></i> Create Deck
+            </SecondaryButton>
+          </ButtonGroup>
+        ) : (
+          <ButtonGroup>
+            <Button onClick={() => navigate("/signup")}>Get Started</Button>
+            <SecondaryButton onClick={() => navigate("/login")}>
+              Log in
+            </SecondaryButton>
+          </ButtonGroup>
+        )}
+      </Hero>
 
-      {/* create highlight cards */}
-      <p>
-        Practice speaking - Record yourself saying words and phrases. Listen
-        back and compare with examples to improve your pronunciation.
-      </p>
+      <Grid>
+        <FeatureCard>
+          <FeatureIcon>
+            <i className="fa-solid fa-microphone"></i>
+          </FeatureIcon>
+          <FeatureTitle>Speak & Listen</FeatureTitle>
+          <FeatureText>
+            Record your own voice and compare it with AI-generated
+            pronunciations to improve accuracy and confidence.
+          </FeatureText>
+        </FeatureCard>
 
-      <p>
-        Get clear definitions - See translations and explanations that make
-        sense. Each word includes context to help you understand how it's used.
-      </p>
+        <FeatureCard>
+          <FeatureIcon>
+            <i className="fa-solid fa-book-open"></i>
+          </FeatureIcon>
+          <FeatureTitle>Personalized Cards</FeatureTitle>
+          <FeatureText>
+            Add translations, clear definitions, and your own notes or examples
+            to create a study experience tailored to you.
+          </FeatureText>
+        </FeatureCard>
 
-      <p>
-        See your progress - Keep track of the words you've practiced and how
-        you're improving over time with simple charts and stats.
-      </p>
+        <FeatureCard>
+          <FeatureIcon>
+            <i className="fa-solid fa-repeat"></i>
+          </FeatureIcon>
+          <FeatureTitle>Spaced Repetition</FeatureTitle>
+          <FeatureText>
+            Practice cards at your own pace and reinforce memory with built-in
+            spaced repetition, making learning more effective.
+          </FeatureText>
+        </FeatureCard>
+      </Grid>
     </Wrapper>
   );
 };
