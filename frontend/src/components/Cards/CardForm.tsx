@@ -99,7 +99,7 @@ const CardForm = ({ cardId }: CardFormProps) => {
   }, [deckId, auth?.session]);
 
   useEffect(() => {
-    if (word.length) {
+    if (word.length > 0) {
       setDisabledAI(false);
       setDisabledTrans(false);
     } else {
@@ -245,6 +245,13 @@ const CardForm = ({ cardId }: CardFormProps) => {
               disabled={disabledAI || !!ttsUrl}
               type="button"
               onClick={handleGenerateTTS}
+              title={
+                ttsUrl
+                  ? "Pronunciation already retrieved"
+                  : word
+                  ? "Get AI generated pronunciation"
+                  : "Enter a word to translate"
+              }
             >
               {miniLoaderAI ? (
                 <i className="fa-solid fa-spinner fa-spin-pulse"></i>
@@ -271,9 +278,16 @@ const CardForm = ({ cardId }: CardFormProps) => {
           {/* Get translation */}
           <PlayerWrapper>
             <SmallButton
-              disabled={disabledTrans || !!ttsUrl}
+              disabled={disabledTrans || !!translation}
               type="button"
               onClick={handleGetTranslation}
+              title={
+                translation
+                  ? "Translation already exists"
+                  : disabledTrans
+                  ? "Enter a word to translate"
+                  : "Get translation"
+              }
             >
               {miniLoaderTrans ? (
                 <i className="fa-solid fa-spinner fa-spin-pulse"></i>
@@ -285,7 +299,8 @@ const CardForm = ({ cardId }: CardFormProps) => {
           </PlayerWrapper>
         </FormRow>
         <FormRow>
-          <Label htmlFor="definition">Definition</Label>
+          {/* TODO update from definition => phonetic throughout app */}
+          <Label htmlFor="definition">Phonetic Spelling</Label>
           <input
             type="text"
             name="definition"
