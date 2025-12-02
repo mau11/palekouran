@@ -37,6 +37,7 @@ type CardInfo = CardNoUserId & {
   signedUrl?: string;
   id: string;
   ttsAudioId?: string;
+  ttsAudioUrl?: string;
 };
 
 const StudyView = () => {
@@ -54,7 +55,6 @@ const StudyView = () => {
   const [showBack, setShowBack] = useState(false);
   const [token, setToken] = useState("");
   const [reviews, setReviews] = useState<Record<number, string>>({});
-  const [ttsAudioUrl, setTtsAudioUrl] = useState("");
 
   useEffect(() => {
     const fetchDeck = async () => {
@@ -70,16 +70,22 @@ const StudyView = () => {
         const { info, cards } = response.data;
         setDeckInfo(info);
 
-        // filter out cards that do not need to be reviewed now
-        const spaceReppedCards = cards.filter(
-          (item: CardInfo) => now >= new Date(item.nextReviewAt)
+        const spaceReppedCards = await Promise.all(
+          cards
+            // filter out cards that do not need to be reviewed now
+            .filter((item: CardInfo) => now >= new Date(item.nextReviewAt))
+            // add tts audio to card
+            .map(async (card: CardInfo) => {
+              if (card.ttsAudioId) {
+                const { data } = await getSignedTTS(
+                  card.ttsAudioId,
+                  accessToken
+                );
+                return { ...card, ttsAudioUrl: data.signedUrl };
+              }
+              return card;
+            })
         );
-        spaceReppedCards.map(async (card: CardInfo) => {
-          if (card.ttsAudioId) {
-            const { data } = await getSignedTTS(card.ttsAudioId, accessToken);
-            setTtsAudioUrl(data.signedUrl);
-          }
-        });
         setCards(spaceReppedCards);
 
         setToken(accessToken);
@@ -168,11 +174,11 @@ const StudyView = () => {
                 <AudioWrapper src={card.signedUrl} controls />
               </PlayerWrapper>
             )}
-            {ttsAudioUrl && (
+            {card.ttsAudioUrl && (
               <>
                 <SmallSubtext>AI Generated Pronunciation:</SmallSubtext>
                 <PlayerWrapper>
-                  <AudioWrapper src={ttsAudioUrl} controls />
+                  <AudioWrapper src={card.ttsAudioUrl} controls />
                 </PlayerWrapper>
               </>
             )}
