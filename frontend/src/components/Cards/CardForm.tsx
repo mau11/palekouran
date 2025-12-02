@@ -21,6 +21,7 @@ import { uploadAudio } from "@lib/uploads";
 import { createTTS, getSignedTTS } from "@lib/tts";
 import type { DeckNoUserId } from "@utils/types";
 import { getLangName } from "@utils/constants";
+import { getTrans } from "@lib/translations";
 
 type CardFormProps = {
   cardId?: string;
@@ -37,7 +38,8 @@ const CardForm = ({ cardId }: CardFormProps) => {
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(cardId ? true : false);
-  const [miniLoader, setMiniLoader] = useState(false);
+  const [miniLoaderAI, setMiniLoaderAI] = useState(false);
+  const [miniLoaderTrans, setMiniLoaderTrans] = useState(false);
   const [error, setError] = useState("");
   const [category, setCategory] = useState("");
   const [word, setWord] = useState("");
@@ -51,7 +53,8 @@ const CardForm = ({ cardId }: CardFormProps) => {
   const [ttsUrl, setTtsUrl] = useState("");
   const [ttsAudioId, setTtsAudioId] = useState<number | null>(null);
   const [deck, setDeck] = useState<DeckNoUserId | null>(null);
-  const [disabled, setDisabled] = useState(true);
+  const [disabledAI, setDisabledAI] = useState(true);
+  const [disabledTrans, setDisabledTrans] = useState(true);
 
   useEffect(() => {
     const accessToken = auth?.session?.access_token;
@@ -97,9 +100,11 @@ const CardForm = ({ cardId }: CardFormProps) => {
 
   useEffect(() => {
     if (word.length) {
-      setDisabled(false);
+      setDisabledAI(false);
+      setDisabledTrans(false);
     } else {
-      setDisabled(true);
+      setDisabledAI(true);
+      setDisabledTrans(true);
     }
   }, [word.trim().length]);
 
@@ -116,8 +121,8 @@ const CardForm = ({ cardId }: CardFormProps) => {
   };
 
   const handleGenerateTTS = async () => {
-    if (!disabled) {
-      setMiniLoader(true);
+    if (!disabledAI) {
+      setMiniLoaderAI(true);
 
       try {
         const language = deck?.targetLanguage;
@@ -137,9 +142,28 @@ const CardForm = ({ cardId }: CardFormProps) => {
       } catch (err) {
         setError("Failed to generate audio");
       } finally {
-        setMiniLoader(false);
+        setMiniLoaderAI(false);
       }
     }
+  };
+
+  const handleGetTranslation = async () => {
+    setError("");
+    setDisabledTrans(true);
+    setMiniLoaderTrans(true);
+    const sourceLang = deck?.sourceLanguage;
+    const targetLang = deck?.targetLanguage;
+
+    if (sourceLang && targetLang) {
+      const trans = await getTrans(word, sourceLang, targetLang);
+      if (word.trim() === trans.trim()) {
+        setError("Translation unavailable. Try another word.");
+      } else {
+        setTranslation(trans);
+      }
+    }
+    setMiniLoaderTrans(false);
+    setDisabledTrans(false);
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -201,7 +225,7 @@ const CardForm = ({ cardId }: CardFormProps) => {
         </Button>
       </Header>
 
-      {error && <InputError>{error}</InputError>}
+      <InputError>{error}</InputError>
 
       <Form onSubmit={handleSubmit}>
         <FormRow>
@@ -214,13 +238,15 @@ const CardForm = ({ cardId }: CardFormProps) => {
             onChange={(e) => setWord(e.target.value)}
             required
           />
+
+          {/* AI pronunciation */}
           <PlayerWrapper>
             <SmallButton
-              disabled={disabled || !!ttsUrl}
+              disabled={disabledAI || !!ttsUrl}
               type="button"
               onClick={handleGenerateTTS}
             >
-              {miniLoader ? (
+              {miniLoaderAI ? (
                 <i className="fa-solid fa-spinner fa-spin-pulse"></i>
               ) : (
                 <i className="fa-solid fa-volume-high"></i>
@@ -229,6 +255,7 @@ const CardForm = ({ cardId }: CardFormProps) => {
             </SmallButton>
             {ttsUrl && <audio src={ttsUrl} controls />}
           </PlayerWrapper>
+
           <Label htmlFor="translation">
             {deck && getLangName(deck.sourceLanguage)} Translation*
           </Label>
@@ -240,6 +267,22 @@ const CardForm = ({ cardId }: CardFormProps) => {
             onChange={(e) => setTranslation(e.target.value)}
             required
           />
+
+          {/* Get translation */}
+          <PlayerWrapper>
+            <SmallButton
+              disabled={disabledTrans || !!ttsUrl}
+              type="button"
+              onClick={handleGetTranslation}
+            >
+              {miniLoaderTrans ? (
+                <i className="fa-solid fa-spinner fa-spin-pulse"></i>
+              ) : (
+                <i className="fa-solid fa-language"></i>
+              )}{" "}
+              Get Translation
+            </SmallButton>
+          </PlayerWrapper>
         </FormRow>
         <FormRow>
           <Label htmlFor="definition">Definition</Label>
