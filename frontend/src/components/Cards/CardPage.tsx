@@ -123,7 +123,8 @@ const CardPage = () => {
 
         {card?.definition && (
           <DetailRow>
-            <DetailLabel>Definition</DetailLabel>
+            {/* TODO update from definition => phonetic throughout app */}
+            <DetailLabel>Phonetic Spelling</DetailLabel>
             <DetailValue>{card.definition}</DetailValue>
           </DetailRow>
         )}
