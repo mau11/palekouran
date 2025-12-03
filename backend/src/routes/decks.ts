@@ -164,6 +164,7 @@ deck.post("/:id/new", requireAuth, async (c) => {
       notes,
       audioUrl,
       category,
+      ttsAudioId,
     } = await c.req.json();
 
     if (!userId || !deckId || !word || !translation) {
@@ -186,6 +187,7 @@ deck.post("/:id/new", requireAuth, async (c) => {
         notes,
         audioUrl,
         category,
+        ttsAudioId,
       });
       await tx
         .update(decksTable)
