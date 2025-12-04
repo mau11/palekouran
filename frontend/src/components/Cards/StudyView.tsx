@@ -169,6 +169,7 @@ const StudyView = () => {
         {!showBack ? (
           <CardFace>
             <h2>{card.word}</h2>
+            {card.definition && <Italic>({card.definition})</Italic>}
             {card.signedUrl && (
               <PlayerWrapper>
                 <AudioWrapper src={card.signedUrl} controls />
@@ -190,7 +191,6 @@ const StudyView = () => {
         ) : (
           <CardBack>
             <h2>{card.translation}</h2>
-            {card.definition && <p>{card.definition}</p>}
             {card.notes && <Italic>{card.notes}</Italic>}
             <RatingSection>
               <IconLinkWrapper
