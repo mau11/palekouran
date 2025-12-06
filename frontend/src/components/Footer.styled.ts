@@ -50,4 +50,10 @@ export const FooterLink = styled.a`
   &:hover {
     transform: scale(1.05);
   }
+
+  i {
+    color: var(--white);
+    font-size: 1.25rem;
+    margin: 0 -3px 0;
+  }
 `;

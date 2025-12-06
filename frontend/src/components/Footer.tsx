@@ -10,6 +10,15 @@ const Footer = () => {
       <span>
         Created by Mau:
         <FooterLink
+          href="https://tech.mauworks.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="View Mau's Portfolio"
+          title="Visit Mau's Portfolio"
+        >
+          <i className="fa-solid fa-globe"></i>
+        </FooterLink>
+        <FooterLink
           href="https://github.com/mau11/palekouran"
           target="_blank"
           rel="noopener noreferrer"
@@ -19,7 +28,7 @@ const Footer = () => {
           <img src="/images/github.png" alt="GitHub Logo" />
         </FooterLink>
         <FooterLink
-          href="https://linkedin.com/in/mau11/"
+          href="https://linkedin.com/in/mau11"
           target="_blank"
           rel="noopener noreferrer"
           aria-label="View Mau's LinkedIn Profile"
