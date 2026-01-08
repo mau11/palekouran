@@ -7,6 +7,9 @@ const breakpoints = {
     portrait: "screen and (max-width: 768px)",
     landscape: "screen and (max-width: 1024px)",
   },
+  desktop: {
+    large: "screen and (max-width: 1400px)",
+  },
 };
 
 export default breakpoints;
