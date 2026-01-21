@@ -51,6 +51,7 @@
 - **TypeScript** - Type safety
 - **Styled Components** - CSS-in-JS styling
 - **Font Awesome** - all icons
+- **Umami** - Lightweight, open-source analytics (privacy-focused)
 
 <div>
   <a href="https://reactjs.org/" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/danielcranney/readme-generator/main/public/icons/skills/react-colored.svg" alt="React" title="React" width="36" height="36"/></a>
@@ -59,6 +60,7 @@
   <a href="https://www.typescriptlang.org/" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/danielcranney/readme-generator/main/public/icons/skills/typescript-colored.svg" alt="TypeScript" title="TypeScript" width="36" height="36"/></a>
   <a href="https://styled-components.com/" target="_blank" rel="noreferrer"><img src="https://avatars.githubusercontent.com/u/20658825?s=200&v=4" alt="styled-components" title="styled-components" width="36" height="36"/></a>
   <a href="https://fontawesome.com/" target="_blank" rel="noreferrer"><img src="https://avatars.githubusercontent.com/u/1505683?s=200&v=4" alt="Font Awesome" title="Font Awesome" width="36" height="36"/></a>
+  <a href="https://umami.is/" target="_blank" rel="noreferrer"><img src="https://avatars.githubusercontent.com/u/105618662?s=200&v=4" alt="Umami" title="Umami" width="36" height="36"/></a>
 </div>
 
 ### Backend / Infrastructure:
@@ -194,7 +196,13 @@ This project is licensed under the PolyForm Noncommercial License - see the [LIC
 - [Context API](https://react.dev/reference/react/createContext)
 - [React Router](https://github.com/remix-run/react-router)
 
+**Analytics:**
+
+- [Umami Documentation](https://umami.is/docs)
+
 ### Privacy Note
+
+This project uses Umami, an open-source, privacy-conscious analytics tool. Umami does not use cookies or collect personally identifiable information. You can see how data is tracked by reviewing the source code.
 
 By default, Supabase enables telemetry data sharing. From Supabase:
 
