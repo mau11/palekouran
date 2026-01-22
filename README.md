@@ -173,7 +173,7 @@ The application is deployed on [Railway](https://railway.com/).
 
 ## License
 
-This project is licensed under the PolyForm Noncommercial License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the PolyForm Noncommercial License - see the [LICENSE](LICENSE.md) file for details.
 
 ## Additional Resources
 
