@@ -297,6 +297,11 @@ deck.delete("/:id", requireAuth, async (c) => {
       return c.json({ error: "Deck id required" }, 400);
     }
 
+    const [deck] = await getDeck(userId, deckId);
+    if (!deck) {
+      return c.json({ error: "Deck not found" }, 404);
+    }
+
     const cards = await getDeckOfCards(userId, deckId);
 
     // delete audio from supabase storage, if exists
@@ -311,14 +316,10 @@ deck.delete("/:id", requireAuth, async (c) => {
       }
     }
 
-    await deleteDeck(Number(deckId));
-
-    // TODO check what is the best way to log deletion error
-    // deleted eq undefined on success and on error
-    // const [deleted] = await deleteDeck(Number(deckId));
-    // if (something) {
-    //   return c.json({ error: "Error deleting deck" }, 500);
-    // }
+    const deleted = await deleteDeck(userId, Number(deckId));
+    if (deleted.length === 0) {
+      return c.json({ error: "Deck not found" }, 404);
+    }
 
     return c.json(
       {
