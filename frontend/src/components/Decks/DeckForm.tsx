@@ -74,7 +74,6 @@ const DeckForm = ({ deckId }: DeckFormProps) => {
 
       if (token) {
         const body = {
-          userId: auth.user?.id,
           title,
           notes,
           sourceLanguage,

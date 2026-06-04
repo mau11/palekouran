@@ -1,11 +1,11 @@
 // referenced: https://github.com/CarlosZiegler/hono-supabase
 // https://supabase.com/docs/reference/javascript/auth-api
 import { Hono } from "hono";
-import { eq, sql } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import { db } from "@db/client";
-import { createCard, createDeck } from "@db/queries/insert";
+import { createDeck } from "@db/queries/insert";
 import { getCard, getDeck, getDeckOfCards, getDecks } from "@db/queries/select";
-import { decksTable, SelectCard, SelectDeck } from "@db/schema";
+import { cardsTable, decksTable, SelectCard, SelectDeck } from "@db/schema";
 import { omitUserId } from "../index";
 import { requireAuth } from "../middleware/requireAuth";
 import { deleteCard, deleteDeck } from "@db/queries/delete";
@@ -121,11 +121,12 @@ deck.get("/:deckId/:cardId", requireAuth, async (c) => {
 // create deck
 deck.post("/", requireAuth, async (c) => {
   try {
-    const { userId, title, notes, sourceLanguage, targetLanguage, isPublic } =
+    const userId = c.get("userId");
+    const { title, notes, sourceLanguage, targetLanguage, isPublic } =
       await c.req.json();
 
-    if (!userId || !title || !sourceLanguage || !targetLanguage) {
-      return c.json({ error: "User, title and languages are required" }, 400);
+    if (!title || !sourceLanguage || !targetLanguage) {
+      return c.json({ error: "Title and languages are required" }, 400);
     }
 
     const [deck] = await createDeck({
@@ -155,9 +156,9 @@ deck.post("/", requireAuth, async (c) => {
 // create card
 deck.post("/:id/new", requireAuth, async (c) => {
   try {
+    const userId = c.get("userId");
+    const deckId = c.req.param("id");
     const {
-      userId,
-      deckId,
       word,
       translation,
       definition,
@@ -167,20 +168,25 @@ deck.post("/:id/new", requireAuth, async (c) => {
       ttsAudioId,
     } = await c.req.json();
 
-    if (!userId || !deckId || !word || !translation) {
+    if (!word || !translation) {
       return c.json(
-        { error: "User, deck, original word and translation are required" },
+        { error: "Original word and translation are required" },
         400
       );
+    }
+
+    const [ownedDeck] = await getDeck(userId, deckId);
+    if (!ownedDeck) {
+      return c.json({ error: "Deck not found" }, 404);
     }
 
     let card: SelectCard;
 
     // https://orm.drizzle.team/docs/transactions
     await db.transaction(async (tx) => {
-      [card] = await createCard({
+      [card] = await tx.insert(cardsTable).values({
         userId,
-        deckId,
+        deckId: Number(deckId),
         word,
         translation,
         definition,
@@ -188,11 +194,13 @@ deck.post("/:id/new", requireAuth, async (c) => {
         audioUrl,
         category,
         ttsAudioId,
-      });
+      }).returning();
       await tx
         .update(decksTable)
         .set({ totalCards: sql`${decksTable.totalCards} + 1` })
-        .where(eq(decksTable.id, Number(deckId)));
+        .where(
+          and(eq(decksTable.id, Number(deckId)), eq(decksTable.userId, userId))
+        );
     });
 
     return c.json(
@@ -211,27 +219,26 @@ deck.post("/:id/new", requireAuth, async (c) => {
 
 // edit deck
 deck.patch("/:id", requireAuth, async (c) => {
+  const userId = c.get("userId");
   const deckId = c.req.param("id");
 
   try {
-    const { userId, title, notes, sourceLanguage, targetLanguage, isPublic } =
+    const { title, notes, sourceLanguage, targetLanguage, isPublic } =
       await c.req.json();
 
-    if (!userId) {
-      return c.json({ error: "User id required" }, 400);
+    const updated = await editDeck(userId, Number(deckId), {
+      title,
+      notes,
+      sourceLanguage,
+      targetLanguage,
+      isPublic,
+    });
+
+    if (updated.length === 0) {
+      return c.json({ error: "Deck not found" }, 404);
     }
 
-    const [deck] = await editDeck(
-      {
-        userId,
-        title,
-        notes,
-        sourceLanguage,
-        targetLanguage,
-        isPublic,
-      },
-      Number(deckId)
-    );
+    const [deck] = updated;
 
     return c.json(
       {
@@ -257,13 +264,8 @@ deck.patch("/:deckId/:cardId", requireAuth, async (c) => {
     const { word, translation, definition, notes, audioUrl, category } =
       await c.req.json();
 
-    if (!userId) {
-      return c.json({ error: "User id required" }, 400);
-    }
-
-    const [deck] = await editCard({
+    const updated = await editCard(userId, {
       id: Number(cardId),
-      userId,
       deckId: Number(deckId),
       word,
       translation,
@@ -273,11 +275,17 @@ deck.patch("/:deckId/:cardId", requireAuth, async (c) => {
       category,
     });
 
+    if (updated.length === 0) {
+      return c.json({ error: "Card not found" }, 404);
+    }
+
+    const [card] = updated;
+
     return c.json(
       {
         message: "Card updated successfully",
         // remove userId before sending back
-        deck: omitUserId(deck),
+        card: omitUserId(card),
       },
       201
     );

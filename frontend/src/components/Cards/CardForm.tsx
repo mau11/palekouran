@@ -188,8 +188,6 @@ const CardForm = ({ cardId }: CardFormProps) => {
         }
 
         const body = {
-          userId: auth.user?.id,
-          deckId: Number(deckId),
           word,
           translation,
           definition,
