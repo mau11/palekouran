@@ -1,7 +1,9 @@
 # palekouran
 
 ![Static Badge](https://img.shields.io/badge/WORK%20IN%20PROGRESS-darkgreen)
-![License](https://img.shields.io/badge/license-PolyForm%20Noncommercial-blue)
+![License](https://img.shields.io/badge/License-PolyForm%20Noncommercial-green)
+![TypeScript](https://img.shields.io/badge/TypeScript-6.0-blue)
+![React](https://img.shields.io/badge/React-19-61dafb)
 
 > **Palekouran** is a modern language learning tool that combines traditional flashcards with interactive audio features. Record your pronunciation, get AI-powered translations, and track your progress, all in one place.
 
@@ -10,7 +12,7 @@
 ## Table of Contents
 
 1. [Features](#features)
-1. [Demo](#demo)
+1. [Demo & Deployment](#demo--deployment)
 1. [Tech Stack](#tech-stack)
 1. [Requirements](#requirements)
 1. [Getting Started](#getting-started)
@@ -18,7 +20,6 @@
    1. [Environment Variables](#environment-variables)
    1. [Installing Dependencies](#installing-dependencies)
    1. [Running the Application](#running-the-application)
-1. [Deployment](#deployment)
 1. [License](#license)
 1. [Additional Resources](#additional-resources)
    1. [Documentation](#documentation)
@@ -27,16 +28,21 @@
 ## Features
 
 - **Audio Recording** - Record and save pronunciations for each flashcard
+- **AI Pronunciation** - Generate reference audio with ElevenLabs TTS and listen side-by-side with your recording
+- **AI Translations** - Fetch translations while creating cards (client-side via Google Translate)
 - **Multi-Language Support** - Practice vocabulary across multiple language pairs
 - **Custom Decks** - Organize vocabulary by topic or category
+- **Spaced Repetition** - Rate each reviewed card (Easy, Okay, or Hard) to automatically adjust when you'll see it next
 - **Interactive Study Mode** - Flip cards to test your knowledge
-- **Progress Tracking** - Monitor your learning journey over time
+- **Progress Tracking** - Review history and study stats on your account page
 
-## Demo
+## Demo & Deployment
 
-**Live Demo**: [palekouran.mauworks.com](https://palekouran.mauworks.com)
+**Live demo:** [palekouran.mauworks.com](https://palekouran.mauworks.com)
 
-**Test Account:**
+**Hosted on:** [Railway](https://railway.com/)
+
+**Test account** (demo only):
 
 - Email: `test@example.com`
 - Password: `password`
@@ -55,7 +61,7 @@
 
 <div>
   <a href="https://reactjs.org/" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/danielcranney/readme-generator/main/public/icons/skills/react-colored.svg" alt="React" title="React" width="36" height="36"/></a>
-  <a href="https://reactrouter.com/" target="_blank" rel="noreferrer"><img src="https://reactrouter.com/_brand/React%20Router%20Brand%20Assets/React%20Router%20Logo/Light.svg" alt="React Router" title="React Router" width="36" height="36"/></a>
+  <a href="https://reactrouter.com/" target="_blank" rel="noreferrer"><img src="https://reactrouter.com/_brand/react-router-brand-assets/logo/Light.svg" alt="React Router" title="React Router" width="36" height="36"/></a>
   <a href="https://vitejs.dev/" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/danielcranney/readme-generator/main/public/icons/skills/vite-colored.svg" alt="Vite" title="Vite" width="36" height="36"/></a>
   <a href="https://www.typescriptlang.org/" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/danielcranney/readme-generator/main/public/icons/skills/typescript-colored.svg" alt="TypeScript" title="TypeScript" width="36" height="36"/></a>
   <a href="https://styled-components.com/" target="_blank" rel="noreferrer"><img src="https://avatars.githubusercontent.com/u/20658825?s=200&v=4" alt="styled-components" title="styled-components" width="36" height="36"/></a>
@@ -83,8 +89,8 @@
 
 ## Requirements
 
-- Node v24.11.0
-- pnpm v11.6.0
+- Node v24.18.0 (see [`.nvmrc`](.nvmrc))
+- pnpm v10.28.2
 
 ## Getting Started
 
@@ -96,22 +102,36 @@
 
 **Database Migrations:**
 
-If you need to apply changes to the database, generate and run migrations using Drizzle:
+From the `backend/` directory, generate and apply migrations using Drizzle:
 
 ```sh
+cd backend
+
 # Generate a migration
-npx drizzle-kit generate --name=add_some_column_to_some_table
+pnpm db:generate --name=add_some_column_to_some_table
 
 # Apply migrations
-npx drizzle-kit migrate
+pnpm db:migrate
 ```
+
+**Supabase Storage:**
+
+Create two **private** storage buckets in your Supabase project. The app serves files via signed URLs.
+
+| Bucket           | Purpose                            |
+| ---------------- | ---------------------------------- |
+| `pronunciations` | User-recorded audio (WebM)         |
+| `tts`            | AI-generated reference audio (MP3) |
+
+See the [Storage Quickstart](https://supabase.com/docs/guides/storage/quickstart) for setup details.
 
 ### Environment Variables
 
-Copy the example environment files in both frontend and backend directories:
+Copy the example environment files in both `frontend/` and `backend/`:
 
 ```sh
-cp .env.example .env
+cp frontend/.env.example frontend/.env
+cp backend/.env.example backend/.env
 ```
 
 Then add your values to each `.env` file.
@@ -123,26 +143,32 @@ Then add your values to each `.env` file.
 | VITE_API_URL | Backend API URL (default: http://localhost:3000) |
 
 **Backend Variables:**
-| Variable | Description |
+
+| Variable                 | Description                                                                                            |
 | ------------------------ | ------------------------------------------------------------------------------------------------------ |
-| PORT | Port number (default: 3000) |
-| DATABASE_URL | PostgreSQL connection string (format: postgresql://postgres:[password]@db.[project].supabase.co:5432/) |
-| SUPABASE_URL | Your Supabase project URL |
-| SUPABASE_PUBLISHABLE_KEY | Supabase public API key ([find here](https://supabase.com/dashboard/project/*/settings/api-keys)) |
-| SUPABASE_SECRET_KEY | Supabase secret API key ([find here](https://supabase.com/dashboard/project/*/settings/api-keys)) |
-| FRONTEND_URL | Frontend URL (default: http://localhost:5173) |
-| ELEVENLABS_API_KEY | ElevenLabs API keys ([find here](https://elevenlabs.io/app/developers/api-keys)) |
+| PORT                     | Port number (default: 3000)                                                                            |
+| DATABASE_URL             | PostgreSQL connection string (format: postgresql://postgres:[password]@db.[project].supabase.co:5432/) |
+| SUPABASE_URL             | Your Supabase project URL                                                                              |
+| SUPABASE_PUBLISHABLE_KEY | Supabase public API key ([find here](https://supabase.com/dashboard/project/*/settings/api-keys))      |
+| SUPABASE_SECRET_KEY      | Supabase secret API key ([find here](https://supabase.com/dashboard/project/*/settings/api-keys))      |
+| FRONTEND_URL             | Frontend URL (default: http://localhost:5173)                                                          |
+| ELEVENLABS_API_KEY       | ElevenLabs API key ([find here](https://elevenlabs.io/app/developers/api-keys))                        |
+| ELEVEN_LABS_VOICE_ID     | Optional ElevenLabs voice ID (defaults to a built-in voice if unset)                                   |
 
 ### Installing Dependencies
 
+This repo has separate frontend and backend packages (no root workspace). Install both:
+
 ```sh
 nvm use
-pnpm install
+
+cd frontend && pnpm install
+cd ../backend && pnpm install
 ```
 
 ### Running the Application
 
-Start both the frontend and backend development servers:
+Start both the frontend and backend development servers (each in its own terminal):
 
 **Frontend:**
 
@@ -159,17 +185,6 @@ pnpm dev
 ```
 
 The application will be available at http://localhost:5173
-
-## Deployment
-
-The application is deployed on [Railway](https://railway.com/).
-
-**Live Demo**: [palekouran.mauworks.com](https://palekouran.mauworks.com)
-
-**Test Account:**
-
-- Email: `test@example.com`
-- Password: `password`
 
 ## License
 
