@@ -8,7 +8,7 @@ import { getCard, getDeck, getDeckOfCards, getDecks } from "@db/queries/select";
 import { cardsTable, decksTable, SelectCard, SelectDeck } from "@db/schema";
 import { omitUserId } from "../index";
 import { requireAuth } from "../middleware/requireAuth";
-import { deleteCard, deleteDeck } from "@db/queries/delete";
+import { deleteDeck, ownedCardFilter } from "@db/queries/delete";
 import { editCard, editDeck } from "@db/queries/update";
 import { supabaseAdmin } from "@lib/supabase";
 import { AUDIO_BUCKET } from "./uploads";
@@ -348,17 +348,20 @@ deck.delete("/:deckId/:cardId", requireAuth, async (c) => {
     const deckId = c.req.param("deckId");
     const cardId = c.req.param("cardId");
 
-    if (!deckId && !cardId) {
+    if (!deckId || !cardId) {
       return c.json({ error: "Deck and card id required" }, 400);
     }
 
-    const card = await getCard(userId, deckId, cardId);
+    const [card] = await getCard(userId, deckId, cardId);
+    if (!card) {
+      return c.json({ error: "Card not found" }, 404);
+    }
 
     // delete audio from supabase storage, if exists
-    if (card[0].audioUrl) {
+    if (card.audioUrl) {
       const { error: storageError } = await supabaseAdmin.storage
         .from(AUDIO_BUCKET)
-        .remove([card[0].audioUrl]);
+        .remove([card.audioUrl]);
 
       if (storageError) {
         console.error("Error deleting card audio from storage:", storageError);
@@ -366,15 +369,25 @@ deck.delete("/:deckId/:cardId", requireAuth, async (c) => {
     }
 
     // https://orm.drizzle.team/docs/transactions
-    await db.transaction(async (tx) => {
-      await deleteCard(Number(deckId), Number(cardId));
+    const deleted = await db.transaction(async (tx) => {
+      const rows = await tx
+        .delete(cardsTable)
+        .where(
+          ownedCardFilter(userId, Number(deckId), Number(cardId))
+        )
+        .returning();
       await tx
         .update(decksTable)
         .set({ totalCards: sql`${decksTable.totalCards} - 1` })
-        .where(eq(decksTable.id, Number(deckId)));
+        .where(
+          and(eq(decksTable.id, Number(deckId)), eq(decksTable.userId, userId))
+        );
+      return rows;
     });
 
-    // TODO check what is the best way to log deletion error
+    if (deleted.length === 0) {
+      return c.json({ error: "Card not found" }, 404);
+    }
 
     return c.json(
       {

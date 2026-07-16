@@ -4,6 +4,18 @@ import { db } from "@db/client";
 import { and, eq } from "drizzle-orm";
 import { InsertCard, InsertDeck, cardsTable, decksTable } from "@db/schema";
 
+export function ownedCardFilter(
+  userId: string,
+  deckId: InsertDeck["id"],
+  cardId: InsertCard["id"]
+) {
+  return and(
+    eq(cardsTable.id, cardId),
+    eq(cardsTable.deckId, deckId),
+    eq(cardsTable.userId, userId)
+  );
+}
+
 export async function deleteDeck(userId: string, id: InsertDeck["id"]) {
   return await db
     .delete(decksTable)
@@ -12,10 +24,12 @@ export async function deleteDeck(userId: string, id: InsertDeck["id"]) {
 }
 
 export async function deleteCard(
+  userId: string,
   deckId: InsertDeck["id"],
   cardId: InsertCard["id"]
 ) {
   return await db
     .delete(cardsTable)
-    .where(and(eq(cardsTable.id, cardId), eq(cardsTable.deckId, deckId)));
+    .where(ownedCardFilter(userId, deckId, cardId))
+    .returning();
 }
